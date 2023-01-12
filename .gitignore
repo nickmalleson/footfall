@@ -1,0 +1,28 @@
+
+MelbourneAnalysis/Data/*
+=======
+*.dat
+results/	results/
+!**/__pycache__/
+Outputs/
+__pycache__
+Regridding/ReadMe.pdf
+*.pdf
+*desktop.ini
+/Notes/*
+*.xlsx
+*.csv
+*.ipynb_checkpoints*
+.ipynb_checkpoints
+**/*.ipynb_checkpoints/
+**/**/*.ipynb_checkpoints/
+
+# Mac crap
+.DS_Store
+
+# Vim swap files
+*.swp
+
+.*  # ignore all hidden files and folders
+!/.gitignore  # explicitly do not ignore .gitignore
+
