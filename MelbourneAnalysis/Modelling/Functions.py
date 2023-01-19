@@ -5,6 +5,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import classification_report, mean_squared_error,r2_score
 import time as thetime
+from sklearn.pipeline import Pipeline
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import KFold
+
 
 def label_hours (row):
     if row['time'] >6 and row['time'] <= 9:
