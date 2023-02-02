@@ -19,3 +19,7 @@ Out of sample predictons - predicitons made by a model on data not used during t
 PRedictions made on data not used to train a model provide insight into how the model will generalise to new situations. 
 
 So, you could also fit a model on the training data, and then use it to predict the training data. If the score is better for predict the training data than the test data, then the model is overfitting. 
+
+### Data leakage
+This occurs when information about the holdout data set (e.g. test or validation data) is made available to the model in the training dataset. This is information that would not be available to the model normally at prediction time. This generally results in  an overly optimistic performance estimate in training (/ a poorer than expected performance with novel data). The data scaling process can introduce data leakage if it is performed before the data is split into train and testing sets. This can be avoided using a Pipeline. 
+
