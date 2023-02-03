@@ -10,6 +10,38 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import KFold
 
 
+# Code from: https://stackoverflow.com/questions/20105364/how-can-i-make-a-scatter-plot-colored-by-density-in-matplotlib/53865762#53865762
+def using_datashader(ax, x, y, normalisation):
+    df = pd.DataFrame(dict(x=x, y=y))
+    dsartist = dsshow(df,ds.Point("x", "y"),ds.count(), vmin=0.1, vmax=100,norm=normalisation,aspect="auto",ax=ax)
+    plt.colorbar(dsartist, ax=ax)
+    
+def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_name, regex_pattern):
+    print("Running {} model, variables include {}".format(model_name,  regex_name))
+
+    # Filter columns using the regex pattern in function input
+    X_train = X_train[X_train.columns.drop(list(X_train.filter(regex=regex_pattern)))].copy()
+    
+    # Get list of all features
+    feature_list = list(X_train.columns)
+        
+    # Perform cross validation, time how long it takes
+    start = time()
+    model_output = cross_validate(model, X_train, Y_train, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    end = time()
+    
+    #  Create a dataframe containng scores for each performance metric
+    df =pd.DataFrame({'mae': round(abs(model_output['test_neg_mean_absolute_error'].mean()),2), 
+         'r2': round(abs(model_output['test_r2'].mean()),2), 'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
+                     index =["{}_{}".format(model_name, regex_name)])
+    
+    # Get the estimators 
+    estimators = model_output['estimator']
+    
+    print('Ran in {} minutes'.format(round((end - start)/60),2))
+    return [estimators, df, feature_list]   
+
+
 def label_hours (row):
     if row['time'] >6 and row['time'] <= 9:
         return 'morning rush hour'
@@ -23,26 +55,6 @@ def label_hours (row):
         return 'evening'    
     elif row['time'] == 23  or row['time'] <= 6 :
         return 'nighttime' 
-    
-    
-def run_model(x):
-    name, model_type = x # Unpack the tuple
-    # See how long it takes to run this model
-    start = thetime.time()
-    # Use a pipeline to first scale the inputs (especially the weather)
-    model = Pipeline (
-        [ ('standardize', MinMaxScaler(feature_range = (0,1))), 
-         (name, model_type())]
-    )
-    # Evaluate the pipeline (run the model)
-    kfold = KFold(n_splits=10, random_state=7, shuffle = True)
-    mse = cross_val_score(model, X_train, Y_train, cv=kfold, scoring = 'neg_mean_squared_error')
-    r2 = cross_val_score(model, X_train, Y_train, cv=kfold, scoring = 'r2')
-    
-    # See how long it took (in seconds)
-    runtime = int(thetime.time() - start)
-    # Return the results, taking the median of the errors
-    return (name, model, r2, np.median(r2), mse, np.median(mse), runtime)
 
 def select_n_floors(row):
     year = row['datetime'].year
