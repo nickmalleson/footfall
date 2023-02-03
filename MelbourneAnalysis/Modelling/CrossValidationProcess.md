@@ -1,6 +1,8 @@
-### Cross validation process
+## Cross validation
 
-Machine learning methods are used to try and model the unknown. The model will never be perfect. The aim is to produce a model which performs well when making predictions on new data. To train the model, you feed data, containing both the target and predictor variables, into the machine learning algorithm and it identifys patterns and determines how to best predict the target variable. You could test how good the method is that the model comes up with for predicting the target variable using the same data used to train it; however, this would likely lead to an overly optimistic view on how the model will generalise to new data (it has already seen the training data and so knows how to handle it). The ability to generalise to new data is what we are really interested in, and so model evaluation really requires a seperate test data set not included in the training data fed to the model. In the absence of new data, to estimate a model's skill on new data, we have to use statistical tricks. For instance, fitting the model on a portion of the data and 'holding out' another portion of data, which the model does not see during training, to test the model performance. During this process it is essential to avoid data leakage (see below).
+Machine learning methods are used to try and model the unknown. The model will never be perfect. The aim is to produce a model which performs well when making predictions on new data. To train the model, you feed data, containing both the target and predictor variables, into the machine learning algorithm and it identifys patterns and determines how to best predict the target variable. You could test how good the method is that the model comes up with for predicting the target variable using the same data used to train it; however, this would likely lead to an overly optimistic view on how the model will generalise to new data (it has already seen the training data and so knows how to handle it). 
+
+The ability to generalise to new data is what we are really interested in, and so model evaluation really requires a seperate test data set not included in the training data fed to the model. In the absence of new data, to estimate a model's skill on new data, we have to use statistical tricks. For instance, fitting the model on a portion of the data and 'holding out' another portion of data, which the model does not see during training, to test the model performance. During this process it is essential to avoid data leakage (see below).
 
 However, by chance the held-out data might be particularly easy or particularly hard to predict. Resampling is an approach to accounting for this. K-fold CV is an example of resampling. By repeatedly sampling the data into training and hold-out testing sets we are able to account for the model sensitivity to the data it has been trained on. By averaging the performance metrics over many folds we get a better sense of the model which will, on average, best generalise to new data. Once the resmapling process has been used to estimate the skill of the models under consideration, the resampling procedure is then finished with. 
 
@@ -11,27 +13,11 @@ K-fold CV provides a reliable/robust evaluation of the model performance. When u
 
 However, some people still prefer to use a separate holdout set (which is separated off at the very beginning and not used in K-fold CV nor in fitting the final model) for a final evaluation of the chosen model after model selection. However, evaluating the model on a holdout test set only provides a single evaluation of the model, which may be influenced by the specific subset of data used as the holdout set. If the holdout set is not representative of the overall distribution of the data, the evaluation on the holdout set may not be a reliable indicator of the model's performance.
 
-Using a hold-out set might be useful when the data is limited, to ensure that the model has not overfitted to the training data.
+Using a hold-out set might be useful when the data is limited. However, using a hold-out set also limits the amount of data available to the K-fold CV process. 
+, to ensure that the model has not overfitted to the training data.
 
 
 
-
-
-Once you use a test data to assess your model, you shouldn't tune or adjust the model any further.  Hold out sets should never be used to make decisions about which algorithms to use or for improving or tuning algorithms. 
-
-If the score is better for predict the training data than the test data, then the model is overfitting. 
-
-https://machinelearningmastery.com/train-final-machine-learning-model/ 
-
-If you train a model on all the available data, then how do you know how well the model will perform? You have already answered this in the K-fold validation (resampling) process. 
-
-What is the point of keeping back a test data set to test the final model? What if the skill is poor on this test set? It's redundant and could be misleading. If it is then: 1. This 5% is a sample that is not representative of data . i.e.. Occurred by chance. So i should have other approach to test on representative of the data. 2. Model is not good enough or over-fitted – Even this time i cannot come to conclusion as 5% sample may not be representative of data.
-
-Model performance scores - averaged across CV runs. 
-
-The hold out method is the simplest kind of cross validation. K-fold cross validation is just iteration of the hold out method. 
-
-Applied machine learning is concerned with more than performing a good performing model; it also requires finding an appropriate sequence of data preperation steps and steps for the post processing of predictions. 
 
 ### Data leakage
 This occurs when information about the holdout data set (e.g. test or validation data) is made available to the model in the training dataset. This is information that would not be available to the model normally at prediction time. This generally results in  an overly optimistic performance estimate in training (/ a poorer than expected performance with novel data). The data scaling process can introduce data leakage if it is performed before the data is split into train and testing sets. This can be avoided using a Pipeline. 
