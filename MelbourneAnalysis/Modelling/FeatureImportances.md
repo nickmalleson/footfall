@@ -1,3 +1,6 @@
+### Gini feature importance
+Gini feature importance (or mean decrease in impurity (MDI) counts the number of times a feature is used to split a node, weighted by the number of samples it splits
+
 https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html  
 
 Problems with impurity based feature importances:
