@@ -4,7 +4,7 @@ Machine learning methods are used to try and model the unknown. The model will n
 
 The ability to generalise to new data is what we are really interested in, and so model evaluation really requires a seperate test data set not included in the training data fed to the model. In the absence of new data, to estimate a model's skill on new data, we have to use statistical tricks. For instance, fitting the model on a portion of the data and 'holding out' another portion of data, which the model does not see during training, to test the model performance. During this process it is essential to avoid data leakage (see below).
 
-However, by chance the held-out data might be particularly easy or particularly hard to predict. Resampling is an approach to accounting for this. K-fold CV is an example of resampling. By repeatedly sampling the data into training and hold-out testing sets we are able to account for the model sensitivity to the data it has been trained on. By averaging the performance metrics over many folds we get a better sense of the model which will, on average, best generalise to new data. Once the resmapling process has been used to estimate the skill of the models under consideration, the resampling procedure is then finished with. 
+However, by chance the held-out data might be particularly easy or particularly hard to predict. Resampling is an approach to accounting for this. K-fold cross-validation (CV) is an example of resampling. By repeatedly sampling the data into training and hold-out testing sets we are able to account for the model sensitivity to the data it has been trained on. By averaging the performance metrics over many folds we get a better sense of how a model will, on average, generalise to new data. Resampling can thus be used to compare different models. Once the resampling process has been used to estimate the skill of the models under consideration, the resampling procedure is then finished with. 
 
 The purpose of K-Fold CV is not to come up with a final model to make real predictions; rather, to compare the performance of various different models. In this context, model refers to a particular method for describing how some input data relates to what we're trying to predict. All of the models trained during K-fold CV should be thrown away. Then, a final version of the model, which the evaluation showed to best generalise to new data, is fitted on ALL of the data. You could theoretically keep one of the models from the CV process (e.g. if training the models was very computationally expensive). However, the model is likely to perform better when fitted on all available data. 
 
@@ -15,8 +15,6 @@ However, some people still prefer to use a separate holdout set (which is separa
 
 Using a hold-out set might be useful when the data is limited. However, using a hold-out set also limits the amount of data available to the K-fold CV process. 
 , to ensure that the model has not overfitted to the training data.
-
-
 
 
 ### Data leakage
