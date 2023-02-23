@@ -8,14 +8,18 @@ import time as thetime
 from sklearn.pipeline import Pipeline
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import KFold
+from time import time
+from sklearn.model_selection import cross_validate
+import datashader as ds
+from datashader.mpl_ext import dsshow
+from sklearn.model_selection import cross_val_predict
+import matplotlib.pyplot as plt
 
-
-# Code from: https://stackoverflow.com/questions/20105364/how-can-i-make-a-scatter-plot-colored-by-density-in-matplotlib/53865762#53865762
 def using_datashader(ax, x, y, normalisation):
     df = pd.DataFrame(dict(x=x, y=y))
     dsartist = dsshow(df,ds.Point("x", "y"),ds.count(), vmin=0.1, vmax=100,norm=normalisation,aspect="auto",ax=ax)
     plt.colorbar(dsartist, ax=ax)
-    
+
 def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_name, regex_pattern):
     print("Running {} model, variables include {}".format(model_name,  regex_name))
 
@@ -41,6 +45,28 @@ def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_nam
     print('Ran in {} minutes'.format(round((end - start)/60),2))
     return [estimators, df, feature_list]   
 
+def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data, regex_name, regex_pattern):
+    print("Running {} model, variables include {}".format(model_name,  regex_name))
+
+    # Get list of all features
+    feature_list = list(X_data.columns)
+        
+    # Perform cross validation, time how long it takes
+    start = time()
+    model_output = cross_validate(model, X_data, Y_data, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    predictions = cross_val_predict(model, X_data,Y_data,cv=cv)
+    end = time()
+    
+    #  Create a dataframe containng scores for each performance metric
+    df =pd.DataFrame({'mae': round(abs(model_output['test_neg_mean_absolute_error'].mean()),2), 
+         'r2': round(abs(model_output['test_r2'].mean()),2), 'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
+                     index =["{}_{}".format(model_name, regex_name)])
+    
+    # Get the estimators 
+    estimators = model_output['estimator']
+    
+    print('Ran in {} minutes'.format(round((end - start)/60),2))
+    return [estimators, df, feature_list, predictions]   
 
 def label_hours (row):
     if row['time'] >6 and row['time'] <= 9:
