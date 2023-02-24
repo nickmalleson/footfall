@@ -66,12 +66,10 @@ print("prepared data")
 data_time_columns = Xfull[['day_of_month_num', 'time', 'weekday_num', 'time_of_day']]
 Xfull = Xfull.drop(['day_of_month_num', 'time', 'weekday_num', 'time_of_day','year', 'month','day', 'datetime', 'month_num'],axis=1)
 print(Xfull.columns)
-print(len(Xfull))
+print(len(Xfull.columns))
+
 # Random Forest was the best performing model
 # ## Fit the final model
-# For this, we use all of the data
-
-
 # # 1
 # print("fitting model 1")
 # rf_model_pipeline1 = Pipeline(steps=[['scaler',StandardScaler()],
@@ -87,18 +85,19 @@ print(len(Xfull))
 # rf_model_pipeline2 = Pipeline(steps=[['scaler',StandardScaler()],
 #                                     ['rf_regressor',RandomForestRegressor(random_state = 2, n_jobs = 32)]])
 # rf_model_pipeline2.fit(Xfull, Yfull)
+# print(len(rf_model_pipeline2['rf_regressor'].feature_importances_))
 # print("saving pickled file")
 # # Save to pickled file
 # filename = 'PickleFiles/rf_model_pipeline2_combined_features.fit.sav'
 # joblib.dump(rf_model_pipeline2, filename)
 
-# # 3
-# print("fitting model 3")
-# rf_model_pipeline3 = Pipeline(steps=[['scaler',StandardScaler()],
-#                                     ['rf_regressor',RandomForestRegressor(random_state = 3, n_jobs = 32)]])
-# rf_model_pipeline3.fit(Xfull, Yfull)
-# print("saving pickled file")
-# # Save to pickled file
-# filename = 'PickleFiles/rf_model_pipeline3_combined_features.fit.sav'
-# joblib.dump(rf_model_pipeline3, filename)
+# 3
+print("fitting model 3")
+rf_model_pipeline3 = Pipeline(steps=[['scaler',StandardScaler()],
+                                    ['rf_regressor',RandomForestRegressor(n_jobs = 32)]])
+rf_model_pipeline3.fit(Xfull, Yfull)
+print("saving pickled file")
+# Save to pickled file
+filename = 'PickleFiles/rf_model_pipeline3_combined_features.fit.sav'
+joblib.dump(rf_model_pipeline3, filename)
 
