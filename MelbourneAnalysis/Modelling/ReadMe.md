@@ -1,9 +1,6 @@
-### Modelling workflow
+# Modelling workflow
 
-
-
-
-#### TestModelsWithCV
+#### TestModelsWithCV.ipynb
 In this script, the performance of a number of different machine learning models are tested using 10-fold cross validation. These include:
 * Linear regression
 * Random Forest
