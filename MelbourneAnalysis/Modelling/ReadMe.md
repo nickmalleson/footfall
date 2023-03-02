@@ -8,9 +8,9 @@ In this script, the performance of a number of different machine learning models
 * Extra Trees Regressor
 
 The performance of the models is also evaluated in respect to whether certain predictive variables are included in the model or not. The options include:
-* a
-* b
-* c
+* Include all the built environment variables (including their subtypes), street betweenness, weather variables and time based variables
+* Include all the built environment variables (but just the headline categories, e.g. furniture, buildings, landmarks), street betweenness, weather variables and time based variables
+* c Include just weather and time based variables
 
 The outputs of the 10-fold cross validation process are:
 * The error metric scores associated with that model (averaged over all folds)
