@@ -1,3 +1,8 @@
+## Table of contents
+
+1. [ Cross Validation] #crossval
+
+<a name="crossval"></a>
 ## Cross validation
 
 Machine learning methods are used to try and model the unknown. The model will never be perfect. The aim is to produce a model which performs well when making predictions on new data. To train the model, you feed data, containing both the target and predictor variables, into the machine learning algorithm and it identifys patterns and determines how to best predict the target variable. You could test how good the method is that the model comes up with for predicting the target variable using the same data used to train it; however, this would likely lead to an overly optimistic view on how the model will generalise to new data (it has already seen the training data and so knows how to handle it). 
