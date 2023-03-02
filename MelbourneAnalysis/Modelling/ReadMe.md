@@ -1,7 +1,11 @@
 # Modelling workflow
 
-#### TestModelsWithCV.ipynb
-In this script, the performance of a number of different machine learning models are tested using 10-fold cross validation. These include:
+### <ins> PrepareDataForModelling.ipynb </ins>
+
+Gets the data into the format required in modelling
+
+###  <ins> TestModelsWithCV.ipynb  </ins>
+Tests the performance of a number of different machine learning models using 10-fold cross validation. These include:
 * Linear regression
 * Random Forest
 * XGBoost
@@ -19,4 +23,13 @@ The outputs of the 10-fold cross validation process are:
 * The model used in each fold, from which the permutation imporance associated with each fold can be calculated
 * A prediction for each data point in the dataset (within cross validation each data point is included in the test set only once and thus despite their beng multiple cross-validation folds, each true value of Y has only one associated prediction )
 
+### <b> Conclusion: Random Forest Regressor is best performing model </b>
 
+###  <ins> FittingFinalModel.ipynb/py  </ins>
+Fit a Random Forest Regressor on the whole dataset.
+
+####  <ins> AssessingFinalmodel.ipynb  </ins>
+Find the Gini and Permutation feature importances returned from the final fitted model.  
+
+#### <ins> Make predictions? </ins>
+Can also make a script to use the model to predict for new data?
