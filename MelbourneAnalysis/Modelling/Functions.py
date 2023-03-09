@@ -15,10 +15,9 @@ from datashader.mpl_ext import dsshow
 from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
 
-def using_datashader(ax, x, y, normalisation):
-    df = pd.DataFrame(dict(x=x, y=y))
-    dsartist = dsshow(df,ds.Point("x", "y"),ds.count(), vmin=0.1, vmax=100,norm=normalisation,aspect="auto",ax=ax)
-    plt.colorbar(dsartist, ax=ax)
+# Add hour of week variable
+def label_hour_of_week (row):                                
+    return "w{}_h{}".format(int(row['Weekday']), int(row['Hour']) )
 
 def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_name, regex_pattern):
     print("Running {} model, variables include {}".format(model_name,  regex_name))
@@ -59,7 +58,9 @@ def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data,
     
     #  Create a dataframe containng scores for each performance metric
     df =pd.DataFrame({'mae': round(abs(model_output['test_neg_mean_absolute_error'].mean()),2), 
-         'r2': round(abs(model_output['test_r2'].mean()),2), 'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
+                      'map': round(abs(model_output['test_neg_mean_absolute_percentage_error'].mean()),2),
+                      'r2': round(abs(model_output['test_r2'].mean()),2), 
+                      'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
                      index =["{}_{}".format(model_name, regex_name)])
     
     # Get the estimators 
@@ -285,3 +286,55 @@ def create_formatted_df(sensors,features_near_sensors,feature_subtypes_near_sens
     sensors_with_features= sensors_with_features.fillna(0)
     
     return sensors_with_features
+
+# This is based on analysis of how the score changes when the feature is not available
+# Thus we need to chose the accuracy score to use
+def find_permutation_importance(model, Xfull, Yfull, n_iter):
+    # instantiate permuter object
+    permuter = PermutationImportance(model, scoring='neg_mean_absolute_error', cv='prefit', n_iter=n_iter)
+    permuter.fit(Xfull.values, Yfull)
+    # Create a dataframe containing the mean results (and std)
+    pi_meanvalues_df = pd.DataFrame({'feature':Xfull.columns,
+                  'importance':permuter.feature_importances_,
+                  'Feature_importance_std': permuter.feature_importances_std_}).sort_values('importance', ascending = True)
+    # Get the raw results for each permutation, and store as a dataframe
+    pi_raw_results = permuter.results_  
+    raw_importances = pd.DataFrame({'feature_list':list(Xfull.columns)})
+    for num,results in enumerate(permuter.results_):
+        raw_importances[num] = results
+    raw_importances =raw_importances.sort_values(by=0, ascending=False)
+    raw_importances.reset_index(drop = True, inplace=True)
+    
+    # Get just the features that scored more highly than a random feature
+    return pi_meanvalues_df, raw_importances
+
+def find_gini_importance(model):
+    # Get numerical feature importances
+    rf_importances = list(model.feature_importances_)
+    rf_feature_importances = pd.DataFrame({'feature': Xfull.columns,'importance':rf_importances})      
+    rf_feature_importances= rf_feature_importances.sort_values(by = 'importance', ascending = True)
+    # Get just the features that scored more highly than a random feature
+    rf_feature_importances_overrandom = rf_feature_importances[rf_feature_importances['importance']>rf_feature_importances.query("feature=='random'")["importance"].values[0]]
+    return rf_feature_importances
+
+
+def plot_compare_importances(axs,gini_importances, perm_importances, above_random_cat = False):
+    
+    if above_random_cat == 'random_num':
+        gini_importances = gini_importances[gini_importances['importance']>gini_importances.query("feature=='random'")["importance"].values[0]]
+        perm_importances = perm_importances[perm_importances['importance']>perm_importances.query("feature=='random'")["importance"].values[0]]
+    elif above_random_cat == 'random_cat':
+        gini_importances = gini_importances[gini_importances['importance']>gini_importances.query("feature=='random_cat'")["importance"].values[0]]
+        perm_importances = perm_importances[perm_importances['importance']>perm_importances.query("feature=='random_cat'")["importance"].values[0]]
+        
+    axs[0].barh(range(len(gini_importances['importance'])), gini_importances["importance"])
+    axs[0].set_yticks(range(len(gini_importances["feature"])))
+    _ = axs[0].set_yticklabels(np.array(gini_importances["feature"]))
+    axs[0].set_title('Gini importance')
+
+    axs[1].barh(range(len(perm_importances['importance'])),
+             perm_importances['importance'],
+             xerr=perm_importances['Feature_importance_std'])
+    axs[1].set_yticks(range(len(perm_importances['importance'])))
+    _ = axs[1].set_yticklabels(perm_importances['feature'])  
+    axs[1].set_title('Permutation importance')

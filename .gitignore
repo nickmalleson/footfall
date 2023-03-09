@@ -26,3 +26,6 @@ Regridding/ReadMe.pdf
 .*  # ignore all hidden files and folders
 !/.gitignore  # explicitly do not ignore .gitignore
 
+*.PickleFiles/
+**/*.PickleFiles/
+**/*.fit.sav
