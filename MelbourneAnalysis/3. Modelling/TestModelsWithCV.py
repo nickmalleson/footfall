@@ -55,9 +55,8 @@ Xfull = Xfull.drop(['day_of_month_num', 'time', 'weekday_num', 'time_of_day','ye
 # Include process to scale the data
 lr_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['linear_regressor',LinearRegression()]])
 rf_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['rf_regressor', RandomForestRegressor(random_state = 1, n_jobs = 16)]])
-xgb_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['xgb_regressor',xgb.XGBRegressor(random_state=1, n_jobs = 16)]])
-et_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['et_regressor',ExtraTreesRegressor (random_state = 1, n_jobs = 16)]])
-
+# xgb_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['xgb_regressor',xgb.XGBRegressor(random_state=1, n_jobs = 10)]])
+# et_model_pipeline = Pipeline(steps=[['scaler',StandardScaler()],['et_regressor',ExtraTreesRegressor (random_state = 1, n_jobs = 10)]])
 
 # ## Run models with cross-validation
 # ### Define the error metrics for the cross-validation to return, and the parameters of the cross validatio
@@ -78,33 +77,30 @@ predictions_df = pd.DataFrame()
 
 feature_importance_scores ={}
 
-models_dict = {
-    "linear_regressor": lr_model_pipeline,
-    "xgb_regressor":xgb_model_pipeline, 
-               "rf_regressor":rf_model_pipeline,
-                "et_regressor":et_model_pipeline
-}
-# models_dict = {"rf_regressor":rf_model_pipeline}
-for model_name,model in models_dict.items():
-    for regex_name, regex in column_regex_dict.items():
-        print(model_name)
-        # Run the model: return the estimators and a dataframe containing evaluation metrics
-        estimators, error_metrics_df, feature_list, predictions = run_model_with_cv_and_predict(
-            model, model_name, error_metrics, cv_parameters, Xfull, Yfull, regex_name, regex) 
-        # Add evaluation metric scores for this model to the dataframe containing the metrics for each model
-        error_metric_scores = error_metric_scores.append(error_metrics_df)
-        
-        predictions_df[model_name] =predictions
-        
-        # Create dataframe of feature importances (no feature importances for linear regression)
-        if model_name != 'linear_regressor':
-            feature_importances = pd.DataFrame(index =[feature_list])
-            for idx,estimator in enumerate(estimators):
-                    feature_importances['Estimator{}'.format(idx)] = estimators[idx][model_name].feature_importances_
-            feature_importance_scores["{}_{}".format(model_name, regex_name)] = feature_importances
-            
-        filename = 'PickleFiles/CV/{}/{}_cv_estimators.pkl'.format(buffer_size_m, model_name)
-        joblib.dump(estimators, filename)
+
+model = rf_model_pipeline
+model_name ="rf_regressor"
+regex_name = 'with_subtypes'
+regex = 'buildings$|furniture$|landmarks$'
+    
+print("rf_regressor")
+# Run the model: return the estimators and a dataframe containing evaluation metrics
+estimators, error_metrics_df, feature_list, predictions = run_model_with_cv_and_predict(
+    model, model_name, error_metrics, cv_parameters, Xfull, Yfull, regex_name, regex) 
+# Add evaluation metric scores for this model to the dataframe containing the metrics for each model
+error_metric_scores = error_metric_scores.append(error_metrics_df)
+
+predictions_df[model_name] =predictions
+
+# Create dataframe of feature importances (no feature importances for linear regression)
+if model_name != 'linear_regressor':
+    feature_importances = pd.DataFrame(index =[feature_list])
+    for idx,estimator in enumerate(estimators):
+            feature_importances['Estimator{}'.format(idx)] = estimators[idx][model_name].feature_importances_
+    feature_importance_scores["{}_{}".format(model_name, regex_name)] = feature_importances
+
+filename = 'PickleFiles/CV/{}/{}_cv_estimators.pkl'.format(buffer_size_m, model_name)
+joblib.dump(estimators, filename)
 
         
 feature_importances_df = feature_importance_scores["rf_regressor"].copy()
