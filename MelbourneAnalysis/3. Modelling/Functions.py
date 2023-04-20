@@ -27,23 +27,24 @@ def using_datashader(ax, x, y, normalisation):
 def label_hour_of_week (row):                                
     return "w{}_h{}".format(int(row['Weekday']), int(row['Hour']) )
 
-def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_name, regex_pattern):
+def run_model_with_cv(model,model_name, metrics, cv, X_data, Y_data, regex_name, regex_pattern):
     print("Running {} model, variables include {}".format(model_name,  regex_name))
 
-    # Filter columns using the regex pattern in function input
-    X_train = X_train[X_train.columns.drop(list(X_train.filter(regex=regex_pattern)))].copy()
-    
     # Get list of all features
-    feature_list = list(X_train.columns)
+    feature_list = list(X_data.columns)
         
     # Perform cross validation, time how long it takes
     start = time()
-    model_output = cross_validate(model, X_train, Y_train, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    print("running cross_validate")
+    model_output = cross_validate(model, X_data, Y_data, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    print("ran cross_validate")    
     end = time()
     
     #  Create a dataframe containng scores for each performance metric
     df =pd.DataFrame({'mae': round(abs(model_output['test_neg_mean_absolute_error'].mean()),2), 
-         'r2': round(abs(model_output['test_r2'].mean()),2), 'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
+                      'map': round(abs(model_output['test_neg_mean_absolute_percentage_error'].mean()),2),
+                      'r2': round(abs(model_output['test_r2'].mean()),2), 
+                      'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
                      index =["{}_{}".format(model_name, regex_name)])
     
     # Get the estimators 
@@ -51,6 +52,36 @@ def run_model_with_cv(model,model_name, metrics, cv, X_train, Y_train, regex_nam
     
     print('Ran in {} minutes'.format(round((end - start)/60),2))
     return [estimators, df, feature_list]   
+
+def run_model_with_cv_and_predict_new(model,model_name, metrics, cv, X_data, Y_data, buffer_size_m):
+    print("Running {} model, buffer size is {}".format(model_name,  buffer_size_m))
+
+    # Get list of all features
+    feature_list = list(X_data.columns)
+        
+    # Perform cross validation, time how long it takes
+    start = time()
+    print("running cross_validate")
+    model_output = cross_validate(model, X_data, Y_data, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    print("ran cross_validate")    
+    
+    print("running cross_val_predict")
+    predictions = cross_val_predict(model, X_data,Y_data,cv=cv)
+    print("ran cross_val_predict")   
+    end = time()
+    
+    #  Create a dataframe containng scores for each performance metric
+    df =pd.DataFrame({'mae': round(abs(model_output['test_neg_mean_absolute_error'].mean()),2), 
+                      'map': round(abs(model_output['test_neg_mean_absolute_percentage_error'].mean()),2),
+                      'r2': round(abs(model_output['test_r2'].mean()),2), 
+                      'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
+                     index =["{}_{}".format(buffer_size_m, regex_name)])
+    
+    # Get the estimators 
+    estimators = model_output['estimator']
+    
+    print('Ran in {} minutes'.format(round((end - start)/60),2))
+    return [estimators, df, feature_list, predictions]   
 
 def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data, regex_name, regex_pattern):
     print("Running {} model, variables include {}".format(model_name,  regex_name))
@@ -60,8 +91,13 @@ def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data,
         
     # Perform cross validation, time how long it takes
     start = time()
+    print("running cross_validate")
     model_output = cross_validate(model, X_data, Y_data, cv=cv, scoring=metrics ,return_estimator=True, error_score="raise")
+    print("ran cross_validate")    
+    
+    print("running cross_val_predict")
     predictions = cross_val_predict(model, X_data,Y_data,cv=cv)
+    print("ran cross_val_predict")   
     end = time()
     
     #  Create a dataframe containng scores for each performance metric
@@ -69,7 +105,7 @@ def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data,
                       'map': round(abs(model_output['test_neg_mean_absolute_percentage_error'].mean()),2),
                       'r2': round(abs(model_output['test_r2'].mean()),2), 
                       'rmse': round(abs(model_output['test_neg_root_mean_squared_error'].mean()),2)},
-                     index =["{}_{}".format(model_name, regex_name)])
+                     index =["{}_{}".format(buffer_size_m, regex_name)])
     
     # Get the estimators 
     estimators = model_output['estimator']
@@ -316,7 +352,7 @@ def find_permutation_importance(model, Xfull, Yfull, n_iter):
     # Get just the features that scored more highly than a random feature
     return pi_meanvalues_df, raw_importances
 
-def find_gini_importance(model):
+def find_gini_importance(Xfull, model):
     # Get numerical feature importances
     rf_importances = list(model.feature_importances_)
     rf_feature_importances = pd.DataFrame({'feature': Xfull.columns,'importance':rf_importances})      
@@ -346,3 +382,10 @@ def plot_compare_importances(axs,gini_importances, perm_importances, above_rando
     axs[1].set_yticks(range(len(perm_importances['importance'])))
     _ = axs[1].set_yticklabels(perm_importances['feature'])  
     axs[1].set_title('Permutation importance')
+
+def prepend(list, str):
+    # Using format()
+    str += '{0}'
+    list = [str.format(i) for i in list]
+    return(list)
+ 
