@@ -17,11 +17,46 @@ import matplotlib.pyplot as plt
 from eli5.sklearn import PermutationImportance
 
 
+def prepare_x_y_data(buffer_size_m):
+    # Read in formatted data
+    data = pd.read_csv("../Cleaned_data/FormattedDataForModelling/formatted_data_for_modelling_allsensors_{}_withsincos.csv".format(buffer_size_m), 
+                       index_col = False)
+    data = data.fillna(0)
+    
+    ### Delete unneeded columns - we currently include data from all sensors (even incomplete ones)
+    sensor_ids = data['sensor_id']
+    data = data.drop(['sensor_id'],axis=1) # don't want this included
+    # Get rid of columns in which none of the sensors have a value
+    for column in data.columns:
+        if np.nanmax(data[column]) ==0:
+            del data[column]
+            
+    # Filter columns using the regex pattern in function input
+    regex_pattern = 'buildings$|furniture$|landmarks$'
+    data = data[data.columns.drop(list(data.filter(regex=regex_pattern)))].copy()
+    
+    ### Add a random variable (to compare performance of other variables against)
+    rng = np.random.RandomState(seed=42)
+    data['random'] = np.random.random(size=len(data))
+    data["random_cat"] = rng.randint(3, size=data.shape[0])
+    
+    ## Prepare data for modelling 
+    ### Split into predictor/predictand variables
+    Xfull = data.drop(['hourly_counts'], axis =1)
+    Yfull = data['hourly_counts'].values
+       
+    ### Store the (non Sin/Cos) time columns and then remove them (Need them later to segment the results by hour of the day)
+    data_time_columns = Xfull[['day_of_month_num', 'time', 'weekday_num', 'time_of_day']]
+    Xfull = Xfull.drop(['day_of_month_num', 'time', 'weekday_num', 'time_of_day','year','datetime', 'month_num'],axis=1)
+    return Xfull, Yfull, data_time_columns
+
+
 # Code from: https://stackoverflow.com/questions/20105364/how-can-i-make-a-scatter-plot-colored-by-density-in-matplotlib/53865762#53865762
 def using_datashader(ax, x, y, normalisation):
     df = pd.DataFrame(dict(x=x, y=y))
     dsartist = dsshow(df,ds.Point("x", "y"),ds.count(), vmin=0.1, vmax=100,norm=normalisation,aspect="auto",ax=ax)
-    plt.colorbar(dsartist, ax=ax)
+    cbar = plt.colorbar(dsartist, ax=ax)
+    cbar.ax.tick_params(labelsize=10) 
 
 # Add hour of week variable
 def label_hour_of_week (row):                                
