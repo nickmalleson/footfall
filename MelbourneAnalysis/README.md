@@ -28,7 +28,7 @@ Also - could include data on population of area. This could also be broken down 
 
 <a name="preparing-data"></a>
 ## 1. Preparing data
-### 1. Clean data
+### <ins> 1. Clean data </ins> 
 Scripts for cleaning the data for: footfall; other features; transport features; and special data variables.
 This includes getting the data all into the same format.  
 For some features (e.g. buildings) it also involves consolidating sub-type categories.  
@@ -42,19 +42,19 @@ The outputs from this are:
 * street_inf_clean.csv - feature, condition_rating, latitude, longitude
 * weather_data_{year}.csv - datetime (hourly), Temp,	Humidity,	Pressure,	Rain, (binary 1 or 0),	WindSpeed
 
-### 2. LinkSpatialFeaturesToSensors
+### <ins>  2. LinkSpatialFeaturesToSensors </ins> 
 This finds the number of features of each type, and the number of features of each subtype, in a radius of each sensor. Produces:
 
 * num_features_near_sensors_100.csv - each column contains data for one sensor, rows specify the feeature types 
 * feature_subtypes_near_sensors_100.csv - each column contains data for one sensor, rows specify the feeature subtypes
 
-### 3. ProcessStreetNetworkData
+### <ins>  3. ProcessStreetNetworkData </ins>
 
-### 4. ProcessWeatherData
+### <ins> 4. ProcessWeatherData </ins>
 Script which scrapes the weather data from the Melbourne historic weather website, cleans the data, and saves yearly weather csvs to the Cleaned_data directory:
 * ScrapingWeatherData.ipynb
 
-### 5. PrepareDataForModelling
+### <ins> 5. PrepareDataForModelling </ins> 
 Join cleaned datasets together to get footfall data alongside the predictor variables.  
 Add dummy variables for day of week and month AND a sin/cos representation of each as cyclical
 
