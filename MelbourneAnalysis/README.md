@@ -80,7 +80,7 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: Random Forest Regressor is best performing model </b>
 
-2b. ModelSelection_TestBufferSize_WithCV.ipynb
+###  <ins> 2b. ModelSelection_TestBufferSize_WithCV.ipynb </ins>
 Tests the performance of a random forest regressor using features collected within a number of different buffer sizes: 50,100,200,300,400,500,600,1000
 
 The outputs of the 10-fold cross validation process are:
