@@ -16,53 +16,10 @@ from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
 from eli5.sklearn import PermutationImportance
 
-def prepare_x_y_data_old(buffer_size_m):
+
+def prepare_x_y_data(input_csv):
     # Read in formatted data
-    data = pd.read_csv("../Cleaned_data/FormattedDataForModelling/formatted_data_for_modelling_allsensors_{}_withsincos.csv".format(buffer_size_m), 
-                       index_col = False)
-
-    ### Delete unneeded columns - we currently include data from all sensors (even incomplete ones)
-    sensor_ids = data['sensor_id']
-    data = data.drop(['sensor_id'],axis=1) # don't want this included
-    # Get rid of columns in which none of the sensors have a value
-    for column in data.columns:
-        if np.nanmax(data[column]) ==0:
-            del data[column]
-
-    # Remove the heading column (using subheadings going forward ) 
-    regex_pattern = 'buildings$|street_inf$|landmarks$'
-    data = data[data.columns.drop(list(data.filter(regex=regex_pattern)))].copy()
-
-    #################################
-    # Deal with date based variables
-    #################################
-    ### Store the (non Sin/Cos) time columns and then remove them (Need them later to segment the results by hour of the day)
-    data_time_columns = data[['day_of_month_num', 'time', 'weekday_num', 'time_of_day']]
-
-    ###  Option 1 - Sin/Cos variables
-    # data_time_columns = data[['day_of_month_num', 'time', 'weekday_num', 'time_of_day']]
-    # data = data.drop(['day_of_month_num', 'time', 'weekday_num', 'time_of_day','year', 'month','day', 'datetime', 'month_num'],axis=1)
-
-    ### Option 2 - Create Dummy Variables
-    data = data.drop(['datetime',  'time', 'time_of_day', "day_of_month_num" , 'weekday_num','month_num',
-                     # 'Sin_month_num', 'Cos_month_num', 'Sin_weekday_num', 'Cos_weekday_num',
-                     ],axis=1)
-
-    ### Add a random variable (to compare performance of other variables against)
-    rng = np.random.RandomState(seed=42)
-    data['random'] = np.random.random(size=len(data))
-    data["random_cat"] = rng.randint(3, size=data.shape[0])
-
-    ## Prepare data for modelling 
-    ### Split into predictor/predictand variables
-    Xfull = data.drop(['hourly_counts'], axis =1)
-    Yfull = data['hourly_counts'].values
-    return Xfull, Yfull
-
-def prepare_x_y_data(buffer_size_m):
-    # Read in formatted data
-    data = pd.read_csv("../Cleaned_data/FormattedDataForModelling/formatted_data_for_modelling_allsensors_{}_withsincos.csv".format(buffer_size_m), 
-                       index_col = False)
+    data = pd.read_csv(input_csv, index_col = False)
     data = data.fillna(0)
     
     ### Delete unneeded columns - we currently include data from all sensors (even incomplete ones)
@@ -88,7 +45,7 @@ def prepare_x_y_data(buffer_size_m):
     Yfull = data['hourly_counts'].values
        
     ### Store the (non Sin/Cos) time columns and then remove them (Need them later to segment the results by hour of the day)
-    data_time_columns = Xfull[['day_of_month_num', 'time', 'weekday_num', 'time_of_day']]
+    data_time_columns = Xfull[['day_of_month_num', 'time', 'weekday_num', 'time_of_day', 'datetime']]
     Xfull = Xfull.drop(['day_of_month_num', 'time', 'weekday_num', 'time_of_day','datetime', 'month_num'],axis=1)
     return Xfull, Yfull, data_time_columns
 
@@ -160,7 +117,7 @@ def run_model_with_cv_and_predict_new(model,model_name, metrics, cv, X_data, Y_d
     print('Ran in {} minutes'.format(round((end - start)/60),2))
     return [estimators, df, feature_list, predictions]   
 
-def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data, regex_name, regex_pattern):
+def run_model_with_cv_and_predict(model,model_name, metrics, cv, X_data, Y_data, regex_name, regex_pattern, buffer_size_m):
     print("Running {} model, variables include {}".format(model_name,  regex_name))
 
     # Get list of all features
