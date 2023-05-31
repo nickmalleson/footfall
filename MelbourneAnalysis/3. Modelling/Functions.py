@@ -15,7 +15,8 @@ from datashader.mpl_ext import dsshow
 from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
 from eli5.sklearn import PermutationImportance
-
+import branca.colormap as cm
+import folium
 
 def prepare_x_y_data(input_csv):
     # Read in formatted data
@@ -31,7 +32,7 @@ def prepare_x_y_data(input_csv):
             del data[column]
             
     # Filter columns using the regex pattern in function input
-    regex_pattern = 'buildings$|furniture$|landmarks$'
+    regex_pattern = 'buildings$|street_inf$|landmarks$'
     data = data[data.columns.drop(list(data.filter(regex=regex_pattern)))].copy()
     
     ### Add a random variable (to compare performance of other variables against)
@@ -221,7 +222,7 @@ def remove_outliers(sensors):
     print("I found {} outliers from {} days in total. Removing them leaves us with {} events".format(\
         len(outliers_list), len(join), len(sensors_without_outliers) ) )
 
-    return sensors_without_outliers
+    return sensors_without_outliers, outliers
 
 def convert_df_variables_to_dummy(df, variables):
     for variable in variables:
@@ -396,7 +397,7 @@ def find_gini_importance(Xfull, model):
     return rf_feature_importances
 
 
-def plot_compare_importances(axs,gini_importances, perm_importances, above_random_cat = False):
+def plot_compare_importances(axs,gini_importances, perm_importances, log_scale = False, above_random_cat = False):
     
     if above_random_cat == 'random_num':
         gini_importances = gini_importances[gini_importances['importance']>gini_importances.query("feature=='random'")["importance"].values[0]]
@@ -409,6 +410,8 @@ def plot_compare_importances(axs,gini_importances, perm_importances, above_rando
     axs[0].set_yticks(range(len(gini_importances["feature"])))
     _ = axs[0].set_yticklabels(np.array(gini_importances["feature"]))
     axs[0].set_title('Gini importance')
+    if log_scale == True:
+        axs[0].set_xscale('log')
 
     axs[1].barh(range(len(perm_importances['importance'])),
              perm_importances['importance'],
@@ -416,10 +419,124 @@ def plot_compare_importances(axs,gini_importances, perm_importances, above_rando
     axs[1].set_yticks(range(len(perm_importances['importance'])))
     _ = axs[1].set_yticklabels(perm_importances['feature'])  
     axs[1].set_title('Permutation importance')
+    if log_scale == True:
+        axs[1].set_xscale('log')
 
 def prepend(list, str):
     # Using format()
     str += '{0}'
     list = [str.format(i) for i in list]
     return(list)
- 
+
+def MAPE(Y_actual,Y_Predicted):
+    try:
+        mape = np.mean(np.abs((Y_actual - Y_Predicted)/Y_actual))*100
+    except:
+        mape = np.nan
+    return mape
+
+def find_hourly_errors_on_date(special_dates_data, special_date, ylim = None):
+    
+    ### Aggregate data by hour (sum or mean)(and remove unneeded columns)
+    # Find the sum each hour (across all sensors)
+    special_date_hourly_values =special_dates_data.groupby(['Hour']).sum() #mean()
+    # Remove extra columns
+    special_date_hourly_values.drop(['Weekday', 'sensor_id', 'AbsolouteError', 'Error'], axis=1, inplace=True)
+    
+    ### Add error metrics
+    special_date_hourly_values['AbsolouteError'] = abs(special_date_hourly_values['Real_vals']-special_date_hourly_values['Predictions'])
+    special_date_hourly_values['Error'] = special_date_hourly_values['Real_vals']-special_date_hourly_values['Predictions']
+    special_date_hourly_values['Percentage_Increase'] = ((special_date_hourly_values['Real_vals'] - special_date_hourly_values['Predictions']) / abs(special_date_hourly_values['Predictions'])) * 100
+    special_date_hourly_values['Mape']  = special_date_hourly_values.apply(lambda x: MAPE(x['Real_vals'], x['Predictions']), axis=1)
+    
+    ### Plot the trajectory of the real values and the errors throughout the day
+    fig, ax = plt.subplots(figsize = (5,4), sharex = True)
+    ax2 = ax.twinx()
+#     fig = plt.plot(special_date_hourly_values.index, special_date_hourly_values['Predictions']);
+    #plt.xticks(np.arange(min(special_date_hourly_values.index), max(special_date_hourly_values.index)+1, 1.0))
+    fig = special_date_hourly_values['Predictions'].plot(ax=ax, color='darkred', linewidth=2, legend =True)
+    fig = special_date_hourly_values['Real_vals'].plot(ax=ax, color='black', linewidth=2, legend =True)
+    fig = special_date_hourly_values['Percentage_Increase'].plot(ax=ax2, color='purple', linewidth=2, legend =True)
+    if ylim != None:
+        ax2.set_ylim(ylim)
+    
+    ax.set_xticks(range(0,len(special_date_hourly_values.index)))
+    ax.set_xticklabels(special_date_hourly_values.index)
+    
+    ax.set_title(special_date)
+    ax.tick_params(axis='x', rotation=90)
+    plt.savefig('Results/EvaluateEvents/{}_lines.png'.format(special_date), bbox_inches='tight')
+    return fig
+
+def find_sensorly_errors_on_date(special_dates_data, special_date, melbourne_sensors):
+    
+    ### Aggregate data by hour (sum or mean)(and remove unneeded columns)
+    # Find the sum each hour (across all sensors)
+    special_date_sensorly_values =special_dates_data.groupby(['sensor_id']).sum()
+    # Remove extra columns
+    special_date_sensorly_values.drop(['Weekday', 'Percentage_Increase', 'AbsolouteError', 'Error', 'Hour'], axis=1, inplace=True)
+    
+    ### Add error metrics
+    special_date_sensorly_values['AbsolouteError'] = abs(special_date_sensorly_values['Real_vals']-special_date_sensorly_values['Predictions'])
+    special_date_sensorly_values['Error'] = special_date_sensorly_values['Real_vals']-special_date_sensorly_values['Predictions']
+    special_date_sensorly_values['Percentage_Increase'] = ((special_date_sensorly_values['Real_vals'] - special_date_sensorly_values['Predictions']) / abs(special_date_sensorly_values['Predictions'])) * 100
+    
+    ### Join back with sensor geographic data
+    special_date_sensorly_values = pd.merge(special_date_sensorly_values, melbourne_sensors[['Latitude', 'Longitude', 'sensor_id']], on='sensor_id', how='left')
+    special_date_sensorly_values.head()
+    
+    ### Plot spatially the percentage increase error
+    error_metric = 'Percentage_Increase'
+    linear = cm.linear.viridis.scale(special_date_sensorly_values[error_metric].min(),special_date_sensorly_values[error_metric].max()).to_step(7)
+
+    # Plot
+    f = folium.Figure(width=500, height=400)
+    melbourne_map = folium.Map(location= [melbourne_sensors.Latitude.mean() - 0.005,
+                               melbourne_sensors.Longitude.mean()- 0.042], tiles="openstreetmap",
+                                 zoom_start=14, min_zoom = 13).add_to(f)
+    folium.TileLayer('cartodbpositron').add_to(melbourne_map)
+    for _, row in special_date_sensorly_values.iterrows():
+        folium.CircleMarker([row.Latitude, row.Longitude],
+                          popup=row.sensor_id,
+                          radius=8,  fill=True, fill_opacity = 1,
+                          color = linear(row[error_metric]), fill_color = linear(row[error_metric]),
+                          ).add_to(melbourne_map)
+
+    # Add legend
+    folium.TileLayer('cartodbpositron').add_to(melbourne_map)
+    linear.caption = "Percentage Increase"
+    svg_style = '<style>svg#legend {background-color: white;}</style>'
+    melbourne_map.get_root().header.add_child(folium.Element(svg_style))
+    linear.add_to(melbourne_map)
+    
+    # Save
+    img_data = melbourne_map._to_png(5)
+    img = Image.open(io.BytesIO(img_data))
+    img.save('Results/EvaluateEvents/{}_spatial.png'.format(special_date))
+    
+    # Crop
+    pilImage = Image.open('Results/EvaluateEvents/{}_spatial.png'.format(special_date))
+    w, h = pilImage.size
+    # im = im.crop((left, top, right, bottom))
+    pilImage.crop((870, 5, w+25, h-230)).save('Results/EvaluateEvents/{}_spatial.png'.format(special_date))    
+    linear.add_to(melbourne_map)
+      
+    # For display in Jupyter
+    f = folium.Figure(width=200, height=400)
+    melbourne_map = folium.Map(location= [melbourne_sensors.Latitude.mean(),
+                               melbourne_sensors.Longitude.mean()], tiles="openstreetmap",
+                                 zoom_start=13, min_zoom = 13).add_to(f)
+    folium.TileLayer('cartodbpositron').add_to(melbourne_map)
+    for _, row in special_date_sensorly_values.iterrows():
+        folium.CircleMarker([row.Latitude, row.Longitude],
+                          popup=row.sensor_id,
+                          radius=8,  fill=True, fill_opacity = 1,
+                          color = linear(row[error_metric]), fill_color = linear(row[error_metric]),
+                          ).add_to(melbourne_map)
+    folium.TileLayer('cartodbpositron').add_to(melbourne_map)
+    linear.caption = "Percentage Increase"
+    svg_style = '<style>svg#legend {background-color: white;}</style>'
+    melbourne_map.get_root().header.add_child(folium.Element(svg_style))
+    linear.add_to(melbourne_map)    
+        
+    display(melbourne_map)
