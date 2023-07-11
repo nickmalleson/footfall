@@ -61,11 +61,11 @@ Add dummy variables for day of week and month AND a sin/cos representation of ea
 <a name="analysing-data"></a>
 ## 2. Analysing data
 
-Looking at distributions etc
+Looking at distributions of predictor and predictand variables. Checking whether the missing footfall values are
 
 <a name="modelling"></a>
 ## 3. Modelling
-### <ins> 1. TestingCorrelations.ipynb  </ins>
+### <ins> 1. CheckingCorrelations.ipynb  </ins>
 Check whether variables are correlated or not.
 
 ###  <ins> 2a. ModelSelection_TestModelType_WithCV.ipynb  </ins>
@@ -79,6 +79,8 @@ The outputs of the 10-fold cross validation process are:
 * The error metric scores associated with that model (averaged over all folds)
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: Random Forest Regressor is best performing model </b>
+
+(Includes two options: one including year as a variable and the other not)
 
 ###  <ins> 2b. ModelSelection_TestBufferSize_WithCV.ipynb </ins>
 Tests the performance of a random forest regressor using features collected within a number of different buffer sizes: 50,100,200,300,400,500,600,1000
