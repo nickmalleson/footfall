@@ -26,6 +26,11 @@ Using a hold-out set might be useful when the data is limited. However, using a 
 ### Data leakage
 This occurs when information about the holdout data set (e.g. test or validation data) is made available to the model in the training dataset. This is information that would not be available to the model normally at prediction time. This generally results in  an overly optimistic performance estimate in training (/ a poorer than expected performance with novel data). The data scaling process can introduce data leakage if it is performed before the data is split into train and testing sets. This can be avoided using a Pipeline. 
 
+Time series data -> we cannot choose random samples and assign them to either the test set or the train set because it doesn't make sense to use values from the future to forecast the past. There is a temporal dependency between observations, and this must be preserved during testing.
+
+So, need to ensure that the test set always has a later time stamp than the training set. 
+
+Blocked CV - 
 
 <a name="evalmodelperformance"></a>
 # Evaluating regression model performance
