@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 from eli5.sklearn import PermutationImportance
 import branca.colormap as cm
 import folium
+from PIL import Image
+import io
 
 def prepare_x_y_data(input_csv):
     # Read in formatted data
@@ -436,37 +438,44 @@ def MAPE(Y_actual,Y_Predicted):
     return mape
 
 def find_hourly_errors_on_date(special_dates_data, special_date, ylim = None):
-    
     ### Aggregate data by hour (sum or mean)(and remove unneeded columns)
     # Find the sum each hour (across all sensors)
     special_date_hourly_values =special_dates_data.groupby(['Hour']).sum() #mean()
     # Remove extra columns
     special_date_hourly_values.drop(['Weekday', 'sensor_id', 'AbsolouteError', 'Error'], axis=1, inplace=True)
-    
+
     ### Add error metrics
     special_date_hourly_values['AbsolouteError'] = abs(special_date_hourly_values['Real_vals']-special_date_hourly_values['Predictions'])
     special_date_hourly_values['Error'] = special_date_hourly_values['Real_vals']-special_date_hourly_values['Predictions']
     special_date_hourly_values['Percentage_Increase'] = ((special_date_hourly_values['Real_vals'] - special_date_hourly_values['Predictions']) / abs(special_date_hourly_values['Predictions'])) * 100
     special_date_hourly_values['Mape']  = special_date_hourly_values.apply(lambda x: MAPE(x['Real_vals'], x['Predictions']), axis=1)
-    
+
     ### Plot the trajectory of the real values and the errors throughout the day
-    fig, ax = plt.subplots(figsize = (5,4), sharex = True)
+    fig, ax = plt.subplots(figsize = (9,8), sharex = True)
     ax2 = ax.twinx()
-#     fig = plt.plot(special_date_hourly_values.index, special_date_hourly_values['Predictions']);
-    #plt.xticks(np.arange(min(special_date_hourly_values.index), max(special_date_hourly_values.index)+1, 1.0))
-    fig = special_date_hourly_values['Predictions'].plot(ax=ax, color='darkred', linewidth=2, legend =True)
-    fig = special_date_hourly_values['Real_vals'].plot(ax=ax, color='black', linewidth=2, legend =True)
-    fig = special_date_hourly_values['Percentage_Increase'].plot(ax=ax2, color='purple', linewidth=2, legend =True)
+    fig = special_date_hourly_values['Predictions'].plot(ax=ax, color='darkred', linewidth=4, legend =False)
+    fig = special_date_hourly_values['Real_vals'].plot(ax=ax, color='black', linewidth=4, legend =False)
+    fig = special_date_hourly_values['Percentage_Increase'].plot(ax=ax2, color='purple', linewidth=4, legend =False)
     if ylim != None:
         ax2.set_ylim(ylim)
-    
+
+    colors_leg = ['darkred', 'black', 'purple']
+    texts = ['Predictions', 'Real values','% Increase'] 
+    patches = [ mpatches.Patch(color=colors_leg[i], label="{:s}".format(texts[i]) ) for i in range(len(texts)) ]    
+
     ax.set_xticks(range(0,len(special_date_hourly_values.index)))
-    ax.set_xticklabels(special_date_hourly_values.index)
-    
-    ax.set_title(special_date)
+    ax.set_xticklabels(special_date_hourly_values.index, size=15)
+    ax.tick_params(axis='both', which='major', labelsize=15, pad=15)
+    ax2.tick_params(axis='both', which='major', labelsize=15)
+    ax.set_xlabel('Hour', fontsize = 21, labelpad=15)
+    ax.set_ylabel ('Count',fontsize=21, labelpad=15)
+    ax2.set_ylabel('Percentage Increase in Count', fontsize=21, rotation=270, labelpad=15)
+
+    # ax.set_title(special_date)
     ax.tick_params(axis='x', rotation=90)
+    plt.legend(handles=patches, bbox_to_anchor=(0.52, 1.08), loc='center', ncol=3, prop={'size': 20});
     plt.savefig('Results/EvaluateEvents/{}_lines.png'.format(special_date), bbox_inches='tight')
-    return fig
+    plt.close() 
 
 def find_sensorly_errors_on_date(special_dates_data, special_date, melbourne_sensors):
     
@@ -539,4 +548,4 @@ def find_sensorly_errors_on_date(special_dates_data, special_date, melbourne_sen
     melbourne_map.get_root().header.add_child(folium.Element(svg_style))
     linear.add_to(melbourne_map)    
         
-    display(melbourne_map)
+    #display(melbourne_map)
