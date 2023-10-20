@@ -25,7 +25,8 @@ The outputs of the 10-fold cross validation process are:
 ###  <ins> 3. ModelEvaluation.ipynb  </ins>
 Tests the performance of a random forest regressor using features collected within 500m.
 
-The outputs of the 10-fold cross validation process are:
+This is validated using a simple 80 - 20 train test split with the chronological order of the data preserved.  
+The outputs of the validation process are:
 * The error metric scores associated with that model (averaged over all folds)
     * The MAE, the MAPE and the RMSE
 * The Gini feature importance associated with each fold
@@ -37,13 +38,11 @@ Also breaks down prediction and prediction error by different time slices and di
 ###  <ins> 4. FittingFinalModel.ipynb </ins>
 Fit a Random Forest Regressor with a 500m buffer on the whole dataset. Saves this model to a pickle file so it can be reused in future. Also saves the predictor variables used in constructing it, and the real values associated with those predictor variables.
 
-###  <ins> 4. AssessingFinalmodel.ipynb  </ins>
+###  <ins> 5. AssessingFinalmodel.ipynb  </ins>
 Reads in the Random Forest model fitted on the whole dataset from the pickle file. 
 Find the Gini and Permutation feature importances returned from this final fitted model.  
 There are no predicted values to plot, because we fitted the model on the whole dataset.
 
------
-The performance of the models is also evaluated in respect to whether certain predictive variables are included in the model or not. The options include:
-* Include all the built environment variables (including their subtypes), street betweenness, weather variables and time based variables
-* Include all the built environment variables (but just the headline categories, e.g. furniture, buildings, landmarks), street betweenness, weather variables and time based variables
-* Include just weather and time based variables
+###  <ins> ModelEvaluation_EvaluateEvents.ipynb  </ins>
+
+I THINK THIS NEEDS UPDATING?
