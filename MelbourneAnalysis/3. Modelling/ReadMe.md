@@ -1,9 +1,6 @@
 # Modelling workflow
 
-### <ins> 1. TestingCorrelations.ipynb  </ins>
-Check whether variables are correlated or not.
-
-###  <ins> 2a. ModelSelection_TestModelType_WithCV.ipynb  </ins>
+###  <ins> 1. ModelSelection.ipynb  </ins>
 Tests the performance of a number of different machine learning models using 10-fold cross validation. These include:
 * Linear regression
 * Random Forest
@@ -17,7 +14,7 @@ The outputs of the 10-fold cross validation process are:
 
 There was another version of this script where Year was not included as a variable (this is now deleted as decided it shouldn't be included)
 
-###  <ins> 2b. ModelSelection_TestBufferSize_WithCV_notinclYear.ipynb </ins>
+###  <ins> 2. ModelSelection_TestBufferSize.ipynb </ins>
 Tests the performance of a random forest regressor using features collected within a number of different buffer sizes: 50,100,200,300,400,500,600,1000
 
 The outputs of the 10-fold cross validation process are:
@@ -25,11 +22,7 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: 500m buffer results in best performing model </b>
 
-###  <ins> 2.b. TestModelsWithCV-AggregatedModel_Sum.ipynb  </ins>
-
-The same but with the data for each hour across all the sensors aggrgated into just one summed value for the whole city.
-
-###  <ins> 3. ModelEvaluation_withCV.ipynb  </ins>
+###  <ins> 3. ModelEvaluation.ipynb  </ins>
 Tests the performance of a random forest regressor using features collected within 500m.
 
 The outputs of the 10-fold cross validation process are:
