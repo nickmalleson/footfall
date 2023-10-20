@@ -1,5 +1,7 @@
 # Predicting Pedestrian Footfall: <br /> Location Data Analysis of Melbourne, Australia
 
+This repository contains code for building a machine learning model to predict footfall across the city of Melbourne. It is trained using hourly footfall counts from a network of sensors across the city combined with explanatory variables likely to drive footfall patterns.  
+
 ## Table of Contents
 * [Downloading data](#downloading-data)
 * [1. Preparing data](#preparing-data)
