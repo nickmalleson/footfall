@@ -15,7 +15,9 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: Random Forest Regressor is best performing model </b>
 
-###  <ins> 2b. ModelSelection_TestBufferSize_WithCV.ipynb </ins>
+There was another version of this script where Year was not included as a variable (this is now deleted as decided it shouldn't be included)
+
+###  <ins> 2b. ModelSelection_TestBufferSize_WithCV_notinclYear.ipynb </ins>
 Tests the performance of a random forest regressor using features collected within a number of different buffer sizes: 50,100,200,300,400,500,600,1000
 
 The outputs of the 10-fold cross validation process are:
@@ -23,9 +25,9 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: 500m buffer results in best performing model </b>
 
-###  <ins> 2.b. TestModelsWithCV-AggregatedModel.ipynb  </ins>
+###  <ins> 2.b. TestModelsWithCV-AggregatedModel_Sum.ipynb  </ins>
 
-The same but with the data for each hour across all the sensors aggrgated into just one value for the whole city.
+The same but with the data for each hour across all the sensors aggrgated into just one summed value for the whole city.
 
 ###  <ins> 3. ModelEvaluation_withCV.ipynb  </ins>
 Tests the performance of a random forest regressor using features collected within 500m.
