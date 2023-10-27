@@ -1,0 +1,59 @@
+1698313975393	geckodriver	INFO	Listening on 127.0.0.1:54722
+1698313975870	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--headless" "--remote-debugging-port" "52237" "-no-remote" "-profile" "/tmp/rust_mozprofilev0FeSw"
+*** You are running in headless mode.
+1698313977852	Marionette	INFO	Marionette enabled
+1698313977861	Marionette	INFO	Listening on port 33201
+WebDriver BiDi listening on ws://localhost:52237
+1698313978173	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[Parent 30283, Main Thread] WARNING: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance: 'glib warning', file /builddir/build/BUILD/firefox-102.15.0/toolkit/xre/nsSigHandlers.cpp:167
+
+(firefox:30283): dconf-WARNING **: 10:52:58.625: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt (t=3.13972) [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilev0FeSw/search.json.mozlz4", (void 0)))
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+DevTools listening on ws://localhost:52237/devtools/browser/6f874501-93a2-4518-a429-783e47b676d7
+1698313987842	Marionette	INFO	Stopped listening on port 33201
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+console.error: "Error during quit-application-granted: [Exception... \"File error: Not found\"  nsresult: \"0x80520012 (NS_ERROR_FILE_NOT_FOUND)\"  location: \"JS frame :: resource:///modules/BrowserGlue.jsm :: _onQuitApplicationGranted/tasks< :: line 1996\"  data: no]"
+1698315043799	geckodriver	INFO	Listening on 127.0.0.1:54336
+1698315043932	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/usr ... ss" "--remote-debugging-port" "60459" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofiless9cj1"
+*** You are running in headless mode.
+1698315045773	Marionette	INFO	Marionette enabled
+1698315045780	Marionette	INFO	Listening on port 42835
+WebDriver BiDi listening on ws://localhost:60459
+Read port: 42835
+1698315046027	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[Parent 1414, Main Thread] WARNING: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance: 'glib warning', file /builddir/build/BUILD/firefox-102.15.0/toolkit/xre/nsSigHandlers.cpp:167
+
+(firefox:1414): dconf-WARNING **: 11:10:46.463: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt (t=2.86045) [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofiless9cj1/search.json.mozlz4", (void 0)))
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+DevTools listening on ws://localhost:60459/devtools/browser/57170182-2985-4af0-b715-1adbb0ac790f
+1698315053865	Marionette	INFO	Stopped listening on port 42835
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+console.error: "Error during quit-application-granted: [Exception... \"File error: Not found\"  nsresult: \"0x80520012 (NS_ERROR_FILE_NOT_FOUND)\"  location: \"JS frame :: resource:///modules/BrowserGlue.jsm :: _onQuitApplicationGranted/tasks< :: line 1996\"  data: no]"
+1698315110981	geckodriver	INFO	Listening on 127.0.0.1:33635
+1698315111610	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/usr ... ss" "--remote-debugging-port" "49228" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileNV4A9M"
+*** You are running in headless mode.
+1698315112900	Marionette	INFO	Marionette enabled
+1698315112905	Marionette	INFO	Listening on port 45314
+Read port: 45314
+WebDriver BiDi listening on ws://localhost:49228
+1698315113150	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[Parent 1990, Main Thread] WARNING: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance: 'glib warning', file /builddir/build/BUILD/firefox-102.15.0/toolkit/xre/nsSigHandlers.cpp:167
+
+(firefox:1990): dconf-WARNING **: 11:11:53.459: unable to open file '/run/user/461646/dconf-service/keyfile/user': Failed to open file “/run/user/461646/dconf-service/keyfile/user”: open() failed: No such file or directory; expect degraded performance
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt (t=2.18447) [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileNV4A9M/search.json.mozlz4", (void 0)))
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+DevTools listening on ws://localhost:49228/devtools/browser/e4a55749-a4e0-4ad2-b7bb-28563ea7a1c1
+1698315120657	Marionette	INFO	Stopped listening on port 45314
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.jsm
+Missing chrome or resource URL: resource://gre/modules/UpdateListener.sys.mjs
+console.error: "Error during quit-application-granted: [Exception... \"File error: Not found\"  nsresult: \"0x80520012 (NS_ERROR_FILE_NOT_FOUND)\"  location: \"JS frame :: resource:///modules/BrowserGlue.jsm :: _onQuitApplicationGranted/tasks< :: line 1996\"  data: no]"

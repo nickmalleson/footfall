@@ -14,7 +14,10 @@ import datashader as ds
 from datashader.mpl_ext import dsshow
 from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
-from eli5.sklearn import PermutationImportance
+try:
+    from eli5.sklearn import PermutationImportance
+except:
+    pass
 import branca.colormap as cm
 import folium
 from PIL import Image
