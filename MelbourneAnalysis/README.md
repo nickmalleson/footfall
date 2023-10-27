@@ -1,5 +1,7 @@
 # Predicting Pedestrian Footfall: <br /> Location Data Analysis of Melbourne, Australia
 
+This repository contains code for building a machine learning model to predict footfall across the city of Melbourne. It is trained using hourly footfall counts from a network of sensors across the city combined with explanatory variables likely to drive footfall patterns.  
+
 ## Table of Contents
 * [Downloading data](#downloading-data)
 * [1. Preparing data](#preparing-data)
@@ -65,10 +67,7 @@ Looking at distributions of predictor and predictand variables. Checking whether
 
 <a name="modelling"></a>
 ## 3. Modelling
-### <ins> 1. CheckingCorrelations.ipynb  </ins>
-Check whether variables are correlated or not.
-
-###  <ins> 2a. ModelSelection_TestModelType_WithCV.ipynb  </ins>
+###  <ins> 1. ModelSelection.ipynb  </ins>
 Tests the performance of a number of different machine learning models using 10-fold cross validation. These include:
 * Linear regression
 * Random Forest
@@ -80,9 +79,9 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: Random Forest Regressor is best performing model </b>
 
-(Includes two options: one including year as a variable and the other not)
+There was another version of this script where Year was not included as a variable (this is now deleted as decided it shouldn't be included)
 
-###  <ins> 2b. ModelSelection_TestBufferSize_WithCV.ipynb </ins>
+###  <ins> 2. ModelSelection_TestBufferSize.ipynb </ins>
 Tests the performance of a random forest regressor using features collected within a number of different buffer sizes: 50,100,200,300,400,500,600,1000
 
 The outputs of the 10-fold cross validation process are:
@@ -90,14 +89,11 @@ The outputs of the 10-fold cross validation process are:
     * The MAE, the MAPE and the RMSE
 ### <b> Conclusion: 500m buffer results in best performing model </b>
 
-###  <ins> 2.b. TestModelsWithCV-AggregatedModel.ipynb  </ins>
-
-The same but with the data for each hour across all the sensors aggrgated into just one value for the whole city.
-
-###  <ins> 3. ModelEvaluation_withCV.ipynb  </ins>
+###  <ins> 3. ModelEvaluation.ipynb  </ins>
 Tests the performance of a random forest regressor using features collected within 500m.
 
-The outputs of the 10-fold cross validation process are:
+This is validated using a simple 80 - 20 train test split with the chronological order of the data preserved.  
+The outputs of the validation process are:
 * The error metric scores associated with that model (averaged over all folds)
     * The MAE, the MAPE and the RMSE
 * The Gini feature importance associated with each fold
@@ -109,13 +105,8 @@ Also breaks down prediction and prediction error by different time slices and di
 ###  <ins> 4. FittingFinalModel.ipynb </ins>
 Fit a Random Forest Regressor with a 500m buffer on the whole dataset. Saves this model to a pickle file so it can be reused in future. Also saves the predictor variables used in constructing it, and the real values associated with those predictor variables.
 
-###  <ins> 4. AssessingFinalmodel.ipynb  </ins>
+###  <ins> 5. AssessingFinalmodel.ipynb  </ins>
 Reads in the Random Forest model fitted on the whole dataset from the pickle file. 
 Find the Gini and Permutation feature importances returned from this final fitted model.  
 There are no predicted values to plot, because we fitted the model on the whole dataset.
 
------
-The performance of the models is also evaluated in respect to whether certain predictive variables are included in the model or not. The options include:
-* Include all the built environment variables (including their subtypes), street betweenness, weather variables and time based variables
-* Include all the built environment variables (but just the headline categories, e.g. furniture, buildings, landmarks), street betweenness, weather variables and time based variables
-* Include just weather and time based variables
