@@ -1,6 +1,8 @@
 # Predicting Pedestrian Footfall: <br /> Location Data Analysis of Melbourne, Australia
 
-This repository contains code for building a machine learning model to predict footfall across the city of Melbourne. It is trained using hourly footfall counts from a network of sensors across the city combined with explanatory variables likely to drive footfall patterns.  
+This repository contains code for building a machine learning model to predict footfall across the city of Melbourne.  
+The aim is to be able to predict footfall at any location in the city, for a particular time or day.  
+Sensors across the city record hourly counts of pedestrians, and we use this data combined with other descriptors of the built environment likely to drive footfall patterns.  
 
 ## Table of Contents
 * [Downloading data](#downloading-data)
@@ -23,10 +25,15 @@ Data on other features is downloaded from: https://data.melbourne.vic.gov.au/. I
 * [Buildings](https://data.melbourne.vic.gov.au/Property/Buildings-with-name-age-size-accessibility-and-bic/pmhb-s6pn)
 * [Bike share dock locations](https://data.melbourne.vic.gov.au/w/vrwc-rwgm/spy9-nmud?cur=l0YdZo6QE_m&from=88D7wUgzKYw)
 
-Other possible interesting sources of data to include: social indicators (affluence of area?); tree canopies (green space?; live music venues; Super Sunday bike count;
-Metro Train Stations with Accessibility Information (landmarks only has Railway Station', 'Transport Terminal', 'Marina', 'Bridge' under transport sub-themes - mero stations might feature in transport terminal but would need to check); playgrouns? Cafe, restaurant, bistro seats; Bar, tavern, pub patron capacity; taxi ranks; public toilets; bus stop locations.
-
-Also - could include data on population of area. This could also be broken down further demographically. Using: australian bureau of statistics (abs) census of population and housing. Also data on the number of jobs, collected through the City of Melbourne’s Census of Land Use and Employment (CLUE) 
+Future work coulc consider other possible interesting sources of data:
+* Social indicators (affluence of area?)
+* Tree canopies (green space?
+* Live music venues
+* Playgrounds
+* Cafes/restaurants/bistro seats/Bar, tavern, pub patron capacity
+* Public toilets
+* Population of area, broken down further demographically. Using: australian bureau of statistics (abs) census of population and housing. A
+* Number of jobs, collected through the City of Melbourne’s Census of Land Use and Employment (CLUE) 
 
 <a name="preparing-data"></a>
 ## 1. Preparing data
@@ -45,12 +52,14 @@ The outputs from this are:
 * weather_data_{year}.csv - datetime (hourly), Temp,	Humidity,	Pressure,	Rain, (binary 1 or 0),	WindSpeed
 
 ### <ins>  2. LinkSpatialFeaturesToSensors </ins> 
-This finds the number of features of each type, and the number of features of each subtype, in a radius of each sensor. Produces:
+This finds the number of features of each type, and the number of features of each subtype, in a buffer of Xm of each sensor. 
+This is done for a number of different buffer sizes to allow testing of the buffer size which leads to the best results. This produces:
 
-* num_features_near_sensors_100.csv - each column contains data for one sensor, rows specify the feeature types 
-* feature_subtypes_near_sensors_100.csv - each column contains data for one sensor, rows specify the feeature subtypes
+* num_features_near_sensors_{buffer_size_m}.csv - each column contains data for one sensor, rows specify the feeature types 
+* feature_subtypes_near_sensors_{buffer_size_m}.csv - each column contains data for one sensor, rows specify the feeature subtypes
 
 ### <ins>  3. ProcessStreetNetworkData </ins>
+This is for calculating the betweenness of the street network.
 
 ### <ins> 4. ProcessWeatherData </ins>
 Script which scrapes the weather data from the Melbourne historic weather website, cleans the data, and saves yearly weather csvs to the Cleaned_data directory:
