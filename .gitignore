@@ -30,3 +30,4 @@ Regridding/ReadMe.pdf
 **/*.PickleFiles/
 **/*.fit.sav
 *.pkl
+.Rproj.user
