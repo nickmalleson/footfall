@@ -1,3 +1,8 @@
+# ST-GAM application to footfall data
+
+## Libraries 
+
+```{r message=FALSE}
 library(archive)
 library(readr)
 library(ggspatial)
@@ -14,13 +19,18 @@ library(purrr)      # for model construction
 library(tidyr)      # for model construction 
 library(lubridate)  # for date manipulation
 
-# INstall stgam to do the spatially & temporarlly varying coefficient models
+# Install stgam to do the spatially & temporarlly varying coefficient models
 #remotes::install_github("lexcomber/stgam", build_vignettes = TRUE, force = TRUE)
 library(stgam)
 # vignette("space-time-gam-intro", package = "stgam")
 # vignette("space-time-gam-model-probs-BMA", package = "stgam")
+```
 
+## Read data 
 
+Read the footfall data. These are hourly counts of footfall from ~90 sensors across Melbourne over ~10 years (some for longer than others). Molly also attached a large number of contextual variables related to the weather and the built environment.
+
+```{r readData}
 # Read the data (a csv file within a tar.gz file)
 tar_gz_file <- "../Cleaned_data/FormattedDataForModelling.tgz"
 csv_file_name <- "FormattedDataForModelling/formatted_data_for_modelling_allsensors_400_outlierremovaleachsensor.csv"
@@ -41,33 +51,42 @@ sensor_locs_sf$X <- coords$X
 sensor_locs_sf$Y <- coords$Y
 
 # Map them to check
-ggplot() +
-  annotation_map_tile(type = "cartolight", zoom = 12) +
-  geom_sf(data = sensor_locs_sf, color = "red", size = 3) +
-  labs(title = "Sensor locations in Melbourne") +
-  theme_bw() +
-  ylab("") +
-  xlab("")
+#ggplot() +
+#  annotation_map_tile(type = "cartolight", zoom = 12) +
+#  geom_sf(data = sensor_locs_sf, color = "red", size = 3) +
+#  labs(title = "Sensor locations in Melbourne") +
+#  theme_bw() +
+#  ylab("") +
+#  xlab("")
 
 # Attach the sensor locations (which have a geometry) and convert to sf
 footfall <- footfall |>
   dplyr::left_join(sensor_locs_sf, by = c("sensor_id" = "sensor_id"))
 footfall <- st_as_sf(footfall)
+```
 
-# Map a random sample of the sensors to check
+Map a random sample of the sensors to check
+
+```{r }
 ggplot() +
   annotation_map_tile(type = "cartolight", zoom = 12) +
   geom_sf(data = footfall[sample(1:nrow(footfall), 5000),], aes(color = hourly_counts), size = 3) +
   labs(title = "Random sample of sensors in Melbourne") +
   theme_bw()
+```
 
-# Lets investigate the relationship between footfall and some of the spatial variables
+## Investigate the relationship between footfall and some of the spatial variables
 
+Define the explanatory variables that we want to look at. There are loads, these will do for now.
+
+```{r }
 vars <- c("landmarks_Mixed_Use", "betweenness", "buildings_Education", "distance_from_centre", "big_car_parks")
 vars[!vars %in% colnames(footfall)] # Check these vars are columns in footfall
+```
 
-# Choose a particular time point (we'll worry about time later)
-# Note: used Tuesday 5th and Saturday 9th February 2019 in the PCA paper
+Choose a particular time point (we'll worry about time later). (_Note: used Tuesday 5th and Saturday 9th February 2019 in the PCA paper_), Then filter on that time point
+
+```{r }
 time_point <- ymd_hms("2019-02-05 14:00:00")
 # Filter the footfall data to this time point
 foot <- footfall |>
@@ -79,10 +98,11 @@ ggplot() +
   geom_sf(data = foot, aes(color = hourly_counts), size = 3) +
   labs(title = "Hourly counts of selected time") +
   theme_bw()
+```
 
-# Run a simple SVC, using the vignette for stgam (although this doesn't actually
-# use stgam I don't think)
-# vignette("space-time-gam-intro", package = "stgam")
+Run a simple SVC, using the vignette for stgam (`vignette("space-time-gam-intro", package = "stgam")`)
+
+```{r }
 
 # define intercept term
 foot <- foot |> mutate(Intercept = 1)
@@ -97,18 +117,31 @@ print(base_formula)
 
 # Fit the GAM model using the dynamically constructed formula
 svc.gam <- gam(base_formula, data = foot)
+```
 
-# check 
+Checks
+
+```{r }
 gam.check(svc.gam)
-summary(svc.gam)
+```
 
-# extract coefficient estimates
+```{r}
+summary(svc.gam)
+```
+
+Extract coefficient estimates
+
+```{r }
 vars <- c("Intercept", vars) # (will want to analyse the intercept too)
 res <-  calculate_vcs(model = svc.gam, 
                       terms = vars, 
                       data = foot)
 summary(res[, paste0("b_",vars)],)
+```
 
+Map the coefficients
+
+```{r }
 # Need a list of beta variables
 b_vars <- sapply(vars, function(x) paste0("b_", x)) |> unname()
 
@@ -138,10 +171,12 @@ combined_plot <- plot_grid(plotlist = plots, ncol = 2)
 
 # Print the combined plot
 print(combined_plot)
+```
 
 
+Extra stuff I've not thought about yet.
 
-
+```{r extras, eval=FALSE}
 
 
 # Use stgam to create multiple models with different forms
@@ -158,4 +193,8 @@ head(svc_gam_multi)
 mod_comp_svc <- gam_model_probs(svc_gam_multi, n = 10)
 # have a look
 mod_comp_svc|> select(-f)
+```
 
+## Temporal model
+
+TODO
