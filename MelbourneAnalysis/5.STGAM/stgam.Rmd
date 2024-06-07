@@ -18,6 +18,8 @@ library(doParallel) # for parallelising operations
 library(purrr)      # for model construction
 library(tidyr)      # for model construction 
 library(lubridate)  # for date manipulation
+library(tidyverse)
+library(cols4all)
 
 # Install stgam to do the spatially & temporarlly varying coefficient models
 #remotes::install_github("lexcomber/stgam", build_vignettes = TRUE, force = TRUE)
@@ -171,6 +173,72 @@ combined_plot <- plot_grid(plotlist = plots, ncol = 2)
 
 # Print the combined plot
 print(combined_plot)
+```
+
+Map them again, but this time with a hexagon grid
+
+```{r }
+# Predict coefficient estimates over the surface for each variable dynamically
+for (i in seq_along(vars)) {
+  var <- vars[i]
+  b_var <- b_vars[i]
+  
+  # Create the prediction dynamically for the current variable
+  hgrid <- hgrid %>%
+    mutate(!!b_var := predict(svc.gam, newdata = mutate(hgrid, !!!setNames(rep(0, length(vars)), vars), !!var := 1)))
+}
+
+# Create an empty list to store the plots
+plots <- list()
+
+# Loop over the variables to create plots dynamically
+for (i in seq_along(b_vars)) {
+  b_var <- b_vars[i]
+  tit <- as.expression(bquote(beta[.(vars[i])]))
+
+  p <- ggplot(hgrid, aes_string(fill = b_var)) + 
+    geom_sf() + 
+    ggtitle(tit) +
+    theme_minimal()
+  
+  plots[[i]] <- p
+}
+
+# Combine the plots into a single plot grid
+combined_plot <- plot_grid(plotlist = plots, ncol = 2)
+
+# Print the combined plot
+print(combined_plot)
+```
+
+```{r maphex2}
+
+# make surface
+hgrid <- st_make_grid(foot, square=FALSE,n=50) |>
+  st_sf() |> mutate(id=glue::glue('Hex{sprintf("%03i",row_number())}'))
+#hgrid <- hgrid[foot,]
+
+hgrid <- hgrid %>%
+  st_centroid() %>%
+  st_coordinates() %>%
+  {./1000} %>%
+  as_tibble() %>%
+  bind_cols(hgrid,.) %>%
+  select(X,Y,id)
+
+# predict coefficient estimate over the surface
+hgrid <- hgrid |> 
+  mutate(b_betweenness = predict( svc.gam, newdata = mutate(
+    hgrid, Intercept = 0, landmarks_Mixed_Use = 0, betweenness = 1, buildings_Education = 0, distance_from_centre = 0, big_car_parks = 0)))
+
+# map
+tit = expression(paste(""*beta[betweenness]*" "))
+ggplot(hgrid, aes(fill = b_betweenness)) + 
+  geom_sf()
+  #scale_fill_continuous_c4a_div(palette="brewer.reds",name=tit)
+
+
+
 ```
 
 
