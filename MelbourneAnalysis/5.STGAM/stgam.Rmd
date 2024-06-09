@@ -178,6 +178,19 @@ print(combined_plot)
 Map them again, but this time with a hexagon grid
 
 ```{r }
+# make surface
+hgrid <- st_make_grid(foot, square=FALSE,n=50) |>
+  st_sf() |> mutate(id=glue::glue('Hex{sprintf("%03i",row_number())}'))
+#hgrid <- hgrid[foot,]
+
+hgrid <- hgrid %>%
+  st_centroid() %>%
+  st_coordinates() %>%
+  {./1000} %>%
+  as_tibble() %>%
+  bind_cols(hgrid,.) %>%
+  select(X,Y,id)
+
 # Predict coefficient estimates over the surface for each variable dynamically
 for (i in seq_along(vars)) {
   var <- vars[i]
@@ -185,7 +198,9 @@ for (i in seq_along(vars)) {
   
   # Create the prediction dynamically for the current variable
   hgrid <- hgrid %>%
-    mutate(!!b_var := predict(svc.gam, newdata = mutate(hgrid, !!!setNames(rep(0, length(vars)), vars), !!var := 1)))
+    mutate(!!b_var := predict(
+      svc.gam, newdata = mutate(
+        hgrid, !!!setNames(rep(0, length(vars)), vars), !!var := 1)))
 }
 
 # Create an empty list to store the plots
@@ -198,6 +213,7 @@ for (i in seq_along(b_vars)) {
 
   p <- ggplot(hgrid, aes_string(fill = b_var)) + 
     geom_sf() + 
+    coord_sf() + # To improve the aspect ratio?
     ggtitle(tit) +
     theme_minimal()
   
@@ -211,7 +227,7 @@ combined_plot <- plot_grid(plotlist = plots, ncol = 2)
 print(combined_plot)
 ```
 
-```{r maphex2}
+```{r maphex2, eval=FALSE}
 
 # make surface
 hgrid <- st_make_grid(foot, square=FALSE,n=50) |>
@@ -234,6 +250,7 @@ hgrid <- hgrid |>
 # map
 tit = expression(paste(""*beta[betweenness]*" "))
 ggplot(hgrid, aes(fill = b_betweenness)) + 
+  coord_sf() + # To improve the aspect ratio
   geom_sf()
   #scale_fill_continuous_c4a_div(palette="brewer.reds",name=tit)
 
