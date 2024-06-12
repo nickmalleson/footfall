@@ -231,7 +231,7 @@ print(combined_plot)
 
 Extra stuff I've not thought about yet.
 
-```{r extras, eval=FALSE}
+```{r extras, eval=F}
 
 
 # Use stgam to create multiple models with different forms
