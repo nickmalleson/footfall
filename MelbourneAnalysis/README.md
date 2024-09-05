@@ -7,8 +7,8 @@ Sensors across the city record hourly counts of pedestrians, and we use this dat
 
 ## Changelog / History
 
- - `[v2-epb-submitted1](https://github.com/nickmalleson/footfall/releases/tag/v2-epb-submitted1)` - Version of the code used for the Environment & Planing B paper submission.
- - `v2-epb-submitted2` - Revised version (currently under development) to address reviewer comments. Largest change is incorporating additonal data (longer time period and new socio-economic data)
+ - [`v2-epb-submitted1`](https://github.com/nickmalleson/footfall/releases/tag/v2-epb-submitted1) - Version of the code used for the Environment & Planing B paper submission.
+ - `v2-epb-submitted2` - Revised version (currently under development so no tag) to address reviewer comments. Largest change is incorporating additonal data (longer time period and new socio-economic data)
 
 ## Table of Contents
 * [Downloading data](#downloading-data)
