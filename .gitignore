@@ -20,7 +20,12 @@ Regridding/
 **/*.PickleFiles/
 **/*.fit.sav
 *.pkl
+
+# R and stgm stuff
 .Rproj.user
+.Rhistory
+rosm.cache/
+stgam_files
 
 # Ignore .ipynb_checkpoints in all subdirectories
 .ipynb_checkpoints
