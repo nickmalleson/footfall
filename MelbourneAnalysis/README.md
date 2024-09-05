@@ -4,6 +4,12 @@ This repository contains code for building a machine learning model to predict f
 The aim is to be able to predict footfall at any location in the city, for a particular time or day.  
 Sensors across the city record hourly counts of pedestrians, and we use this data combined with other descriptors of the built environment likely to drive footfall patterns.  
 
+
+## Changelog / History
+
+ - `[v2-epb-submitted1](https://github.com/nickmalleson/footfall/releases/tag/v2-epb-submitted1)` - Version of the code used for the Environment & Planing B paper submission.
+ - `v2-epb-submitted2` - Revised version (currently under development) to address reviewer comments. Largest change is incorporating additonal data (longer time period and new socio-economic data)
+
 ## Table of Contents
 * [Downloading data](#downloading-data)
 * [1. Preparing data](#preparing-data)
