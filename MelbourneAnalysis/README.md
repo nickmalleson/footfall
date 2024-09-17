@@ -19,8 +19,12 @@ Sensors across the city record hourly counts of pedestrians, and we use this dat
 <a name="downloading-data"></a>
 ## Downloading data
 
-Footfall data is downloaded by selecting 'Export --> CSV' from: 
-* https://data.melbourne.vic.gov.au/Transport/Pedestrian-Counting-System-Monthly-counts-per-hour/b2ak-trbp 
+Footfall data is downloaded by selecting 'Export --> CSV': 
+* ~~https://data.melbourne.vic.gov.au/Transport/Pedestrian-Counting-System-Monthly-counts-per-hour/b2ak-trbp~~ (original file location, now changed)
+* This site has a summary of the data available: https://data.melbourne.vic.gov.au/explore/dataset/pedestrian-counting-system-monthly-counts-per-hour/information
+* The original file that we used (before revising the work to include more up to date data) is still available here: https://data.melbourne.vic.gov.au/api/datasets/1.0/pedestrian-counting-system-monthly-counts-per-hour/attachments/pedestrian_counting_system_monthly_counts_per_hour_may_2009_to_14_dec_2022_csv_zip/ 
+* More recent data are also available, called 'pedestrian-counting-system-monthly-counts-per-hour.csv'
+* We use both the 'original' and the new one
 
 Weather data is downloaded from: https://www.timeanddate.com/weather/australia/melbourne/historic. 
 
