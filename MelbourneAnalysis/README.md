@@ -25,6 +25,7 @@ Footfall data is downloaded by selecting 'Export --> CSV':
 * The original file that we used (before revising the work to include more up to date data) is still available here: https://data.melbourne.vic.gov.au/api/datasets/1.0/pedestrian-counting-system-monthly-counts-per-hour/attachments/pedestrian_counting_system_monthly_counts_per_hour_may_2009_to_14_dec_2022_csv_zip/ 
 * More recent data are also available, called 'pedestrian-counting-system-monthly-counts-per-hour.csv'
 * We use both the 'original' and the new one
+* The sensor locations are available from [here](https://melbournetestbed.opendatasoft.com/explore/dataset/pedestrian-counting-system-sensor-locations/export/) (again export -> csv).
 
 Weather data is downloaded from: https://www.timeanddate.com/weather/australia/melbourne/historic. 
 
