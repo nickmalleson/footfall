@@ -46,7 +46,7 @@ from Functions import *
 
 
 buffer_size_m = 400
-input_csv ="../Cleaned_data/FormattedDataForModelling/formatted_data_for_modelling_allsensors_{}.csv".format(buffer_size_m)
+input_csv ="../Cleaned_data/FormattedDataForModelling/formatted_data_for_modelling_allsensors_{}_outlierremovaleachsensor.csv".format(buffer_size_m)
 
 
 # ## Run models with cross-validation
@@ -141,10 +141,10 @@ for model_name, model_pipeline in models_dict.items():
     # Add evaluation metric scores for this model to the dataframe containing the metrics for each model
     error_metric_scores = error_metric_scores.append(error_metrics_df)
     # Save error scores for this distance to file
-    #error_metrics_df.to_csv('Results/CV/ComparingModels/{}_{}m_error_metric_scores.csv'.format(model_name,buffer_size_m),index=False)    
+    error_metrics_df.to_csv('Results/CV/ComparingModels/{}_{}m_error_metric_scores_outlierremovaleachsensor.csv'.format(model_name,buffer_size_m),index=False)    
 
 # Save dataframes of error metrics for each buffer distance 
-#error_metric_scores.to_csv('Results/CV/ComparingModels/comparingmodels_error_metric_scores.csv')   
+error_metric_scores.to_csv('Results/CV/ComparingModels/comparingmodels_error_metric_scores_outlierremovaleachsensor.csv')   
 
 
 # ### Print table showing error metrics associated with each model

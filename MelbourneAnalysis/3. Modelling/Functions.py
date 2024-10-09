@@ -204,6 +204,7 @@ def doubleMADsfromMedian(y, thresh=3.5):
     # Return boolean list showing whether each y is an outlier
     return modified_z_score > thresh   
 
+
 def remove_outliers(sensors):
     # Make a list of true/false for whether the footfall is an outlier
     no_outliers = pd.DataFrame(doubleMADsfromMedian(sensors['hourly_counts']))
@@ -224,10 +225,10 @@ def remove_outliers(sensors):
     # Check that the lengths all make sense
     assert(len(sensors_without_outliers) == len(sensors)-len(outliers_list))
 
-    print("I found {} outliers from {} days in total. Removing them leaves us with {} events".format(\
-        len(outliers_list), len(join), len(sensors_without_outliers) ) )
-
-    return sensors_without_outliers, outliers
+    #print(f"I found {len(outliers_list)} outliers from {len(join)} days in total. Removing them leaves us with {len(sensors_without_outliers)} events")
+    #print(f"{round(len(outliers_list)/len(join) *100,1)}% outliers removed")
+    pct = round(len(outliers_list)/len(join) *100,1)     
+    return sensors_without_outliers, outliers, pct
 
 def convert_df_variables_to_dummy(df, variables):
     for variable in variables:
