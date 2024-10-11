@@ -29,6 +29,7 @@ stgam_files
 
 # Ignore .ipynb_checkpoints in all subdirectories
 .ipynb_checkpoints
+.virtual_documents
 
 # Mac system files
 .DS_Store
