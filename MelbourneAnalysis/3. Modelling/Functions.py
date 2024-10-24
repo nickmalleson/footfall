@@ -567,3 +567,10 @@ def drop_unneeded_columns(data):
     return data.drop([
         'sensor_id', 'sensor_name', 'Name', 'installation_date', 'status', 'note', 'Note', 'Location_Type', 'Status'
     ], axis=1) # don't want this included
+
+def buffer_sizes():
+    """
+    Get the buffer sizes we want to experiment with (so that this isn't hard coded all over the place)
+    :return:
+    """
+    return [50, 100, 200, 400, 500, 600, 1000]
