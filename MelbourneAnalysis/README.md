@@ -76,7 +76,10 @@ This is for calculating the betweenness of the street network.
 Script which scrapes the weather data from the Melbourne historic weather website, cleans the data, and saves yearly weather csvs to the Cleaned_data directory:
 * ScrapingWeatherData.ipynb
 
-### <ins> 5. PrepareDataForModelling </ins> 
+### <ins> 5. ProcessCensusData </ins> 
+Load the raw Australian census data files and create a clean file that has associated census data for each sensor. 
+
+### <ins> 6. PrepareDataForModelling </ins> 
 Join cleaned datasets together to get footfall data alongside the predictor variables.  
 Add dummy variables for day of week and month AND a sin/cos representation of each as cyclical
 
