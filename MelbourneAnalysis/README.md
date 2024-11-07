@@ -77,7 +77,7 @@ Script which scrapes the weather data from the Melbourne historic weather websit
 * ScrapingWeatherData.ipynb
 
 ### <ins> 5. ProcessCensusData </ins> 
-Load the raw Australian census data files and create a clean file that has associated census data for each sensor. 
+Load the raw Australian census data files and create a clean file that has, for each of the three census years (2011, 2016, 2021), the values of some census data for each SA1 region.
 
 ### <ins> 6. PrepareDataForModelling </ins> 
 Join cleaned datasets together to get footfall data alongside the predictor variables.  
