@@ -40,5 +40,4 @@ stgam_files
 # Specific files added by Nick
 MelbourneAnalysis/Street_Network/Pedestrian_network.json
 MelbourneAnalysis/Street_Network/Property_centroid.json
-
-
+MelbourneAnalysis/1. PreparingData/6. PrepareDataForModelling/census_variable_tuples.pkl
