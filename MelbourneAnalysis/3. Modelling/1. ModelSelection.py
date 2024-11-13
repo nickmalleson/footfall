@@ -103,13 +103,18 @@ data_time_columns = data_time_columns[0:index_2019]
 
 # In[46]:
 
+# Note that in the latest version wher NM integrated new sensors and census data we no longer add the
+# weekday (Monday, Tuesday, ....) or month (month_1, month_2) variables, so the only thing to do here is to
+# remove the 'day' column that has the string representionat of the day of week (not sure where this came from)
+Xfull.drop(['day'], axis=1, inplace = True)
 
 # If using the dummy variables
 # Xfull.drop(['Cos_month_num', 'Sin_month_num', 'Cos_weekday_num', 'Sin_weekday_num'], axis=1)
+
 # If using the cyclical variables
-Xfull.drop(['Monday', 'Saturday', 'Sunday', 'Thursday', 'Tuesday', 'Wednesday',
-       'month_2', 'month_3', 'month_4', 'month_5', 'month_6', 'month_7',
-       'month_8', 'month_9', 'month_10', 'month_11', 'month_12'], axis=1, inplace = True)
+#Xfull.drop(['Monday', 'Saturday', 'Sunday', 'Thursday', 'Tuesday', 'Wednesday',
+#       'month_2', 'month_3', 'month_4', 'month_5', 'month_6', 'month_7',
+#       'month_8', 'month_9', 'month_10', 'month_11', 'month_12'], axis=1, inplace = True)
 
 
 # ### Remove year
@@ -119,11 +124,11 @@ Xfull.drop(['Monday', 'Saturday', 'Sunday', 'Thursday', 'Tuesday', 'Wednesday',
 
 del Xfull['year']
 
-
 # ### Run model with cross validation
 
 # In[ ]:
 
+print("Running models with explanatory variables: ", Xfull.columns)
 
 # Dataframe to store the scores for all the models
 error_metric_scores = pd.DataFrame()
@@ -135,6 +140,7 @@ for model_name, model_pipeline in models_dict.items():
     # Use cross_validate to return the error scores associated with this model and this data
     start = time()
     model_output = cross_validate(model_pipeline, Xfull, Yfull, cv=cv_parameters, scoring=error_metrics, error_score="raise")
+
     end = time()
     print('Ran in {} minutes'.format(round((end - start)/60),2))
     
@@ -162,7 +168,7 @@ error_metric_scores.to_csv('Results/CV/ComparingModels/comparingmodels_error_met
 
 
 
-error_metric_scores.to_csv('Results/CV/error_metric_scores_new22.csv')   
+error_metric_scores.to_csv('Results/CV/error_metric_scores_new2.csv')
 
 # In[ ]:
 
