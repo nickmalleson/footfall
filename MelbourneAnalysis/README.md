@@ -100,7 +100,8 @@ Tests the performance of a number of different machine learning models using 10-
 The outputs of the 10-fold cross validation process are:
 * The error metric scores associated with that model (averaged over all folds)
     * The MAE, the MAPE and the RMSE
-### <b> Conclusion: Random Forest Regressor is best performing model </b>
+
+<b> Conclusion: Random Forest Regressor is best performing model </b>
 
 There was another version of this script where Year was not included as a variable (this is now deleted as decided it shouldn't be included)
 
@@ -110,7 +111,8 @@ Tests the performance of a random forest regressor using features collected with
 The outputs of the 10-fold cross validation process are:
 * The error metric scores associated with that model (averaged over all folds)
     * The MAE, the MAPE and the RMSE
-### <b> Conclusion: 500m buffer results in best performing model </b>
+
+<b> Conclusion: 400-500m buffer results in best performing model </b>
 
 ###  <ins> 3. ModelEvaluation.ipynb  </ins>
 Tests the performance of a random forest regressor using features collected within 500m.
@@ -132,4 +134,14 @@ Fit a Random Forest Regressor with a 500m buffer on the whole dataset. Saves thi
 Reads in the Random Forest model fitted on the whole dataset from the pickle file. 
 Find the Gini and Permutation feature importances returned from this final fitted model.  
 There are no predicted values to plot, because we fitted the model on the whole dataset.
+
+###  <ins> 6. UsingModelToEvaluateEvents.ipynb  </ins>
+
+Evalues the model on a few key events to see how well it is able to quantify the change in footfall that
+would have otherwise been predicted on those days.
+
+###  <ins> 7(a/b). TestingFinalModel.ipynb  </ins>
+
+Two scripts that look at how well the model peforms on a single post-covid dataset (a) and 
+how well it performs on a few different post-covid time periods.
 
