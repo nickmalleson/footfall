@@ -1,11 +1,14 @@
 # Run the FormatDataForModelling notebook automatically for different buffer sizes
 # Additionally creates Temporary notebooks that can be deleted afterwards
 # Note that you should FormatDataForModelling.ipynb at least once so the cache
-# that links the sensors to census data can be creatd.
+# that links the sensors to census data can be created.
 import papermill as pm
 import os
 
-BUFFER_SIZES = [50, 100, 200, 400, 500, 600, 1000]
+# Drop 50m buffer as we should have already run the script once with this buffer size (to create the cache
+# needed for linking sensors to census data)
+#BUFFER_SIZES = [50, 100, 200, 400, 500, 600, 1000]
+BUFFER_SIZES = [100, 200, 400, 500, 600, 1000]
 INPUT_NOTEBOOK = "FormatDataForModelling.ipynb"
 OUTPUT_DIR = "."
 
@@ -19,6 +22,3 @@ for BUFFER_SIZE in BUFFER_SIZES:
         OUTPUT_NOTEBOOK,
         parameters={"buffer_size_m": BUFFER_SIZE}
     )
-
-# TODO open the csv files and check they have the same rows and columns
-# f"formatted_data_for_modelling_allsensors_{buffer_size}_outlierremovaleachsensor.csv"
