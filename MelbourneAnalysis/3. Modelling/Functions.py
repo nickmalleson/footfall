@@ -218,6 +218,9 @@ def remove_outliers(sensors):
     join = pd.concat([sensors, no_outliers], axis = 1)
     join = pd.DataFrame(join, columns = ['datetime', 'sensor_id','outlier', 'hourly_counts'])
 
+    # Count the total outlier footfall (a reviewer wanted this)
+    total_outlier_footfall = join[join['outlier'] == True]['hourly_counts'].sum()
+
     # Choose just the outliers
     outliers = join[join['outlier'] == True]
     outliers_list = list(outliers['datetime']) # A list of the days that are outliers
@@ -232,7 +235,7 @@ def remove_outliers(sensors):
     #print(f"I found {len(outliers_list)} outliers from {len(join)} days in total. Removing them leaves us with {len(sensors_without_outliers)} events")
     #print(f"{round(len(outliers_list)/len(join) *100,1)}% outliers removed")
     pct = round(len(outliers_list)/len(join) *100,1)     
-    return sensors_without_outliers, outliers, pct
+    return sensors_without_outliers, outliers, pct, total_outlier_footfall
 
 def convert_df_variables_to_dummy(df, variables):
     for variable in variables:

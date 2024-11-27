@@ -8,7 +8,7 @@ import os
 # Drop 50m buffer as we should have already run the script once with this buffer size (to create the cache
 # needed for linking sensors to census data)
 #BUFFER_SIZES = [50, 100, 200, 400, 500, 600, 1000]
-BUFFER_SIZES = [100, 200, 400, 500, 600, 1000]
+BUFFER_SIZES = [50, 100, 200, 500, 600, 1000]  # Default value of 400m removed as this is done in the first run of the script
 INPUT_NOTEBOOK = "FormatDataForModelling.ipynb"
 OUTPUT_DIR = "."
 
